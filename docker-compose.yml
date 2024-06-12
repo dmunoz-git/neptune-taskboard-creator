@@ -1,0 +1,16 @@
+version: "3.8"
+services: 
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-board
+    ports: 
+      - "8080:8080"
+    volumes: 
+      - jenkins-data:/var/jenkins_home
+    networks: 
+      - kanban-net
+volumes: 
+  jenkins-data:
+
+networks:
+  kanban-net:
