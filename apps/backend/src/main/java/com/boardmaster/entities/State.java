@@ -1,11 +1,11 @@
 package com.boardmaster.entities;
 
-import jakarta.persistence.*;
-import org.springframework.scheduling.config.Task;
-
 import java.util.List;
+import jakarta.persistence.*;
 
-public class Column {
+
+@Entity
+public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -17,6 +17,6 @@ public class Column {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
 }

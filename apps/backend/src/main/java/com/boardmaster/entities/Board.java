@@ -13,5 +13,5 @@ public class Board {
     private String name;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Column> columns;
+    private List<State> states;
 }
