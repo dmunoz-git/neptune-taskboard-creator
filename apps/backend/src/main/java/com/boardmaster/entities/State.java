@@ -12,11 +12,4 @@ public class State {
 
     private String name;
     private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
-
-    @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Task> tasks;
 }

@@ -14,4 +14,8 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "state_id")
     private State state;
+
+    @ManyToOne
+    @JoinColumn(name = "dashboard_id")
+    private Dashboard dashboard;
 }
