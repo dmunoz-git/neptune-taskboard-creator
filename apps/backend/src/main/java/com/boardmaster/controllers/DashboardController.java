@@ -17,31 +17,26 @@ public class DashboardController {
     @Autowired
     private DashboardService service;
 
-    // Crear un nuevo Dashboard
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Dashboard> createDashboard(@RequestParam String name) {
         return new ResponseEntity<>(service.create(name), HttpStatus.CREATED);
     }
 
-    // Obtener un Dashboard por ID
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Dashboard> getDashboardById(@PathVariable Long id) throws BoardmasterException {
         return new ResponseEntity<>(service.getDashboard(id), HttpStatus.OK);
     }
 
-    // Obtener un Dashboard por nombre
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Dashboard> getDashboardByName(@RequestParam String name) throws BoardmasterException {
         return new ResponseEntity<>(service.getDashboard(name), HttpStatus.OK);
     }
 
-    // Obtener todos los Dashboards
     @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<Dashboard>> getAllDashboards() {
         return new ResponseEntity<>(service.getAllDashboards(), HttpStatus.OK);
     }
 
-    // Eliminar un Dashboard por ID
     @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Dashboard> deleteDashboardById(@PathVariable Long id) throws BoardmasterException {
         return new ResponseEntity<>(service.deleteDashboard(id), HttpStatus.OK);
