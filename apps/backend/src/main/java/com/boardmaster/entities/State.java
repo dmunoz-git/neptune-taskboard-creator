@@ -12,4 +12,8 @@ public class State {
 
     private String name;
     private String description;
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
