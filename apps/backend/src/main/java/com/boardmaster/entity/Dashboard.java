@@ -1,11 +1,15 @@
 package com.boardmaster.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Setter
+@Getter
 public class Dashboard {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,10 +24,5 @@ public class Dashboard {
     public Dashboard(String name){
         this.name = name;
         this.tasks = new ArrayList<Task>();
-    }
-
-    //Getters and setters
-    public void setName(String name){
-        this.name = name;
     }
 }
