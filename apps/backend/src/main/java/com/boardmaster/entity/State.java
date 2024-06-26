@@ -1,6 +1,5 @@
-package com.boardmaster.entities;
+package com.boardmaster.entity;
 
-import java.util.List;
 import jakarta.persistence.*;
 
 

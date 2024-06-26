@@ -1,8 +1,8 @@
-package com.boardmaster.services;
+package com.boardmaster.service;
 
-import com.boardmaster.entities.State;
-import com.boardmaster.exceptions.BoardmasterException;
-import com.boardmaster.repositories.IStateRepository;
+import com.boardmaster.entity.State;
+import com.boardmaster.exception.BoardmasterException;
+import com.boardmaster.repository.IStateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

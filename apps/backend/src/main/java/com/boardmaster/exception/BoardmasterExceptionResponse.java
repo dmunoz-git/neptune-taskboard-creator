@@ -1,4 +1,4 @@
-package com.boardmaster.exceptions;
+package com.boardmaster.exception;
 
 import java.time.LocalDateTime;
 

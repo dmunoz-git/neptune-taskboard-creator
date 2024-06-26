@@ -1,7 +1,6 @@
 package com.boardmaster.repository;
 
-import com.boardmaster.entities.State;
-import com.boardmaster.repositories.IStateRepository;
+import com.boardmaster.entity.State;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

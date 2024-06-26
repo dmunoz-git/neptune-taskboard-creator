@@ -1,4 +1,4 @@
-package com.boardmaster.entities;
+package com.boardmaster.entity;
 
 import jakarta.persistence.*;
 

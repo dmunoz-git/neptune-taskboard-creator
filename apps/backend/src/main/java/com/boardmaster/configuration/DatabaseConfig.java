@@ -1,4 +1,4 @@
-package com.boardmaster.configs;
+package com.boardmaster.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;

@@ -1,6 +1,6 @@
-package com.boardmaster.repositories;
+package com.boardmaster.repository;
 
-import com.boardmaster.entities.State;
+import com.boardmaster.entity.State;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

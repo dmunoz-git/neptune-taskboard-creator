@@ -1,7 +1,6 @@
-package com.boardmaster.entities;
+package com.boardmaster.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;

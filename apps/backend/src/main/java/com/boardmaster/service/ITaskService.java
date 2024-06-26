@@ -1,8 +1,7 @@
-package com.boardmaster.services;
+package com.boardmaster.service;
 
-import com.boardmaster.entities.Task;
-import com.boardmaster.exceptions.BoardmasterException;
-import org.springframework.stereotype.Service;
+import com.boardmaster.entity.Task;
+import com.boardmaster.exception.BoardmasterException;
 
 import java.util.List;
 

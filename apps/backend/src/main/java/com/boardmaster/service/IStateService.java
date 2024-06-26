@@ -1,8 +1,7 @@
-package com.boardmaster.services;
+package com.boardmaster.service;
 
-import com.boardmaster.entities.State;
-import com.boardmaster.exceptions.BoardmasterException;
-import org.springframework.scheduling.config.Task;
+import com.boardmaster.entity.State;
+import com.boardmaster.exception.BoardmasterException;
 
 public interface IStateService {
     public State getState(Long id) throws BoardmasterException;

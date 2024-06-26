@@ -1,8 +1,8 @@
-package com.boardmaster.controllers;
+package com.boardmaster.controller;
 
-import com.boardmaster.entities.Dashboard;
-import com.boardmaster.exceptions.BoardmasterException;
-import com.boardmaster.services.DashboardService;
+import com.boardmaster.entity.Dashboard;
+import com.boardmaster.exception.BoardmasterException;
+import com.boardmaster.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

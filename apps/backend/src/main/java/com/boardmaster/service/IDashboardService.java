@@ -1,8 +1,7 @@
-package com.boardmaster.services;
+package com.boardmaster.service;
 
-import com.boardmaster.BoardMasterApplication;
-import com.boardmaster.entities.Dashboard;
-import com.boardmaster.exceptions.BoardmasterException;
+import com.boardmaster.entity.Dashboard;
+import com.boardmaster.exception.BoardmasterException;
 
 import java.util.List;
 

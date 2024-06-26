@@ -1,8 +1,8 @@
-package com.boardmaster.services;
+package com.boardmaster.service;
 
-import com.boardmaster.entities.Dashboard;
-import com.boardmaster.exceptions.BoardmasterException;
-import com.boardmaster.repositories.IDashboardRepository;
+import com.boardmaster.entity.Dashboard;
+import com.boardmaster.exception.BoardmasterException;
+import com.boardmaster.repository.IDashboardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

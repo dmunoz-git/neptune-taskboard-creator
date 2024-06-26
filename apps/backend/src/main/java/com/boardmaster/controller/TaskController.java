@@ -1,8 +1,8 @@
-package com.boardmaster.controllers;
+package com.boardmaster.controller;
 
-import com.boardmaster.entities.Task;
-import com.boardmaster.exceptions.BoardmasterException;
-import com.boardmaster.services.TaskService;
+import com.boardmaster.entity.Task;
+import com.boardmaster.exception.BoardmasterException;
+import com.boardmaster.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
