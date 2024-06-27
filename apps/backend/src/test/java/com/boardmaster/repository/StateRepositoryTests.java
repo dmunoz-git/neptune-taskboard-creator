@@ -1,6 +1,8 @@
 package com.boardmaster.repository;
 
 import com.boardmaster.entity.State;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,9 @@ public class StateRepositoryTests {
     @Autowired
     IStateRepository repository;
 
+    @Autowired
+    EntityManager entityManager;
+
     @BeforeEach
     public void setUp() {
         State state = new State();
@@ -34,6 +39,20 @@ public class StateRepositoryTests {
     @DisplayName("Create: should create an state in the database")
     public void saveStateTest() {
         Assertions.assertEquals("Test State", this.savedState.getName());
+    }
+
+    @Test
+    @DisplayName("Exception: should not be able to create a state with the same name")
+    public void saveDuplicateStateNameTest() {
+        State duplicateState = new State();
+        duplicateState.setName("Test State");
+
+        PersistenceException exception = Assertions.assertThrows(PersistenceException.class, () -> {
+            repository.saveAndFlush(duplicateState);
+            entityManager.flush();
+        });
+
+        Assertions.assertTrue(exception.getMessage().contains("ConstraintViolationException"));
     }
 
     @Test
