@@ -14,6 +14,6 @@ public class BoardmasterErrorHandler {
     @ExceptionHandler(BoardmasterException.class)
     public final ResponseEntity<BoardmasterExceptionResponse> handleBoardmasterExecption(BoardmasterException exception, WebRequest webRequest){
         BoardmasterExceptionResponse response = new BoardmasterExceptionResponse(LocalDateTime.now(), exception.getMessage(), webRequest.getDescription(false));
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
