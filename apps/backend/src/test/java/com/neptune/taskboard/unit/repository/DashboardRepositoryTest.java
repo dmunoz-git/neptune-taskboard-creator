@@ -1,6 +1,6 @@
-package com.neptune.taskboard.repository;
+package com.neptune.taskboard.unit.repository;
 
-import com.neptune.taskboard.entity.Dashboard;
+import com.neptune.taskboard.unit.entity.Dashboard;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

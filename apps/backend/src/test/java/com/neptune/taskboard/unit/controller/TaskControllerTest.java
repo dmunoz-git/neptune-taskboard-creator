@@ -1,9 +1,9 @@
-package com.neptune.taskboard.controller;
+package com.neptune.taskboard.unit.controller;
 
-import com.neptune.taskboard.entity.Dashboard;
-import com.neptune.taskboard.entity.Task;
-import com.neptune.taskboard.exception.BoardmasterException;
-import com.neptune.taskboard.service.TaskService;
+import com.neptune.taskboard.unit.entity.Dashboard;
+import com.neptune.taskboard.unit.entity.Task;
+import com.neptune.taskboard.unit.exception.BoardmasterException;
+import com.neptune.taskboard.unit.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

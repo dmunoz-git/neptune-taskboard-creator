@@ -1,8 +1,8 @@
-package com.neptune.taskboard.repository;
+package com.neptune.taskboard.unit.repository;
 
-import com.neptune.taskboard.entity.Dashboard;
-import com.neptune.taskboard.entity.State;
-import com.neptune.taskboard.entity.Task;
+import com.neptune.taskboard.unit.entity.Dashboard;
+import com.neptune.taskboard.unit.entity.State;
+import com.neptune.taskboard.unit.entity.Task;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;

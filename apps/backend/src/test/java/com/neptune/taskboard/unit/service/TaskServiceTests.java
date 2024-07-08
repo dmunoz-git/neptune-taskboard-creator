@@ -1,10 +1,10 @@
-package com.neptune.taskboard.service;
+package com.neptune.taskboard.unit.service;
 
-import com.neptune.taskboard.entity.Dashboard;
-import com.neptune.taskboard.entity.Task;
-import com.neptune.taskboard.exception.BoardmasterException;
-import com.neptune.taskboard.repository.IDashboardRepository;
-import com.neptune.taskboard.repository.ITaskRepository;
+import com.neptune.taskboard.unit.entity.Dashboard;
+import com.neptune.taskboard.unit.entity.Task;
+import com.neptune.taskboard.unit.exception.BoardmasterException;
+import com.neptune.taskboard.unit.repository.IDashboardRepository;
+import com.neptune.taskboard.unit.repository.ITaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
