@@ -1,10 +1,10 @@
 package com.neptune.taskboard.service;
 
 import com.neptune.taskboard.entity.Task;
-import com.neptune.taskboard.entity.Dashboard;
+import com.neptune.taskboard.entity.Board;
 import com.neptune.taskboard.exception.BoardmasterException;
 import com.neptune.taskboard.repository.ITaskRepository;
-import com.neptune.taskboard.repository.IDashboardRepository;
+import com.neptune.taskboard.repository.IBoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class TaskService implements ITaskService {
     private ITaskRepository taskRepository;
 
     @Autowired
-    private IDashboardRepository dashboardRepository;
+    private IBoardRepository dashboardRepository;
 
     @Override
     public Task getTask(Long id) throws BoardmasterException {
@@ -31,7 +31,7 @@ public class TaskService implements ITaskService {
 
     @Override
     public Task create(Long dashboardId, Task task) throws BoardmasterException {
-        Optional<Dashboard> dashboard = dashboardRepository.findById(dashboardId);
+        Optional<Board> dashboard = dashboardRepository.findById(dashboardId);
         if (dashboard.isEmpty()) {
             throw new BoardmasterException("Dashboard not found");
         }
