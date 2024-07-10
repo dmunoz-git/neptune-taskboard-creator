@@ -1,9 +1,9 @@
 package com.neptune.taskboard.test.unit.service;
 
-import com.neptune.taskboard.unit.entity.State;
-import com.neptune.taskboard.unit.exception.BoardmasterException;
-import com.neptune.taskboard.unit.repository.IStateRepository;
-import com.neptune.taskboard.unit.service.StateService;
+import com.neptune.taskboard.exception.BoardmasterException;
+import com.neptune.taskboard.repository.IStateRepository;
+import com.neptune.taskboard.service.StateService;
+import com.neptune.taskboard.entity.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

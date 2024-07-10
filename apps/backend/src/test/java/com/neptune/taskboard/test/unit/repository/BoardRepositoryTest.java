@@ -1,7 +1,7 @@
 package com.neptune.taskboard.test.unit.repository;
 
-import com.neptune.taskboard.unit.entity.Dashboard;
-import com.neptune.taskboard.unit.repository.IDashboardRepository;
+import com.neptune.taskboard.entity.Board;
+import com.neptune.taskboard.repository.IBoardRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,28 +15,28 @@ import java.util.Optional;
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class DashboardRepositoryTest {
+public class BoardRepositoryTest {
 
     @Autowired
-    IDashboardRepository repository;
+    IBoardRepository repository;
 
     @Autowired
     EntityManager entityManager;
 
-    private Dashboard dashboard;
+    private Board dashboard;
 
     @BeforeEach
     public void setUp() {
-        dashboard = new Dashboard("Test Dashboard");
+        dashboard = new Board("Test Dashboard");
         repository.save(dashboard);
     }
 
     @Test
     @DisplayName("Create: should create dashboard in db")
     public void saveDashboardTest() {
-        Dashboard newDashboard = new Dashboard("New Test Dashboard");
+        Board newDashboard = new Board("New Test Dashboard");
 
-        Dashboard savedDashboard = repository.save(newDashboard);
+        Board savedDashboard = repository.save(newDashboard);
 
         Assertions.assertNotNull(savedDashboard);
         Assertions.assertEquals("New Test Dashboard", savedDashboard.getName());
@@ -45,7 +45,7 @@ public class DashboardRepositoryTest {
     @Test
     @DisplayName("Find: should find dashboard by id")
     public void findDashboardByIdTest() {
-        Optional<Dashboard> foundDashboard = repository.findById(dashboard.getId());
+        Optional<Board> foundDashboard = repository.findById(dashboard.getId());
 
         Assertions.assertTrue(foundDashboard.isPresent());
         Assertions.assertEquals(dashboard.getId(), foundDashboard.get().getId());
@@ -54,7 +54,7 @@ public class DashboardRepositoryTest {
     @Test
     @DisplayName("Exception: should not be able to create a dashboard with the same name")
     public void saveDuplicateDashboardNameTest() {
-        Dashboard duplicateDashboard = new Dashboard("Test Dashboard");
+        Board duplicateDashboard = new Board("Test Dashboard");
 
         DataIntegrityViolationException exception = Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
             repository.saveAndFlush(duplicateDashboard);
@@ -67,7 +67,7 @@ public class DashboardRepositoryTest {
     @Test
     @DisplayName("Find: should find dashboard by name")
     public void findDashboardByNameTest() {
-        Optional<Dashboard> foundDashboard = repository.findByName("Test Dashboard");
+        Optional<Board> foundDashboard = repository.findByName("Test Dashboard");
 
         Assertions.assertTrue(foundDashboard.isPresent());
         Assertions.assertEquals("Test Dashboard", foundDashboard.get().getName());
@@ -78,7 +78,7 @@ public class DashboardRepositoryTest {
     public void updateDashboardTest() {
         dashboard.setName("Updated Dashboard");
 
-        Dashboard updatedDashboard = repository.save(dashboard);
+        Board updatedDashboard = repository.save(dashboard);
 
         Assertions.assertNotNull(updatedDashboard);
         Assertions.assertEquals("Updated Dashboard", updatedDashboard.getName());
@@ -89,7 +89,7 @@ public class DashboardRepositoryTest {
     public void deleteDashboardByIdTest() {
         repository.deleteById(dashboard.getId());
 
-        Optional<Dashboard> foundDashboard = repository.findById(dashboard.getId());
+        Optional<Board> foundDashboard = repository.findById(dashboard.getId());
 
         Assertions.assertFalse(foundDashboard.isPresent());
     }

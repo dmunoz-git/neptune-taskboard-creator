@@ -1,9 +1,9 @@
 package com.neptune.taskboard.test.unit.service;
 
-import com.neptune.taskboard.unit.entity.Dashboard;
-import com.neptune.taskboard.unit.exception.BoardmasterException;
-import com.neptune.taskboard.unit.repository.IDashboardRepository;
-import com.neptune.taskboard.unit.service.DashboardService;
+import com.neptune.taskboard.entity.Board;
+import com.neptune.taskboard.exception.BoardmasterException;
+import com.neptune.taskboard.repository.IBoardRepository;
+import com.neptune.taskboard.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class DashboardServiceTest {
+public class BoardServiceTest {
 
     @Mock
-    IDashboardRepository repository;
+    IBoardRepository repository;
 
     @InjectMocks
-    private DashboardService service;
+    private BoardService service;
 
     @BeforeEach
     void setUp() {
@@ -35,23 +35,23 @@ public class DashboardServiceTest {
     @Test
     @DisplayName("Create Dashboard: should create and return a new dashboard")
     void createDashboardTest() {
-        Dashboard dashboard = new Dashboard("Test Dashboard");
-        when(repository.save(any(Dashboard.class))).thenReturn(dashboard);
+        Board dashboard = new Board("Test Dashboard");
+        when(repository.save(any(Board.class))).thenReturn(dashboard);
 
-        Dashboard createdDashboard = service.create("Test Dashboard");
+        Board createdDashboard = service.create("Test Dashboard");
 
         assertNotNull(createdDashboard);
         assertEquals("Test Dashboard", createdDashboard.getName());
-        verify(repository, times(1)).save(any(Dashboard.class));
+        verify(repository, times(1)).save(any(Board.class));
     }
 
     @Test
     @DisplayName("Get Dashboard by ID: should return dashboard if found")
     void getDashboardByIdTest() throws BoardmasterException {
-        Dashboard dashboard = new Dashboard("Test Dashboard");
+        Board dashboard = new Board("Test Dashboard");
         when(repository.findById(1L)).thenReturn(Optional.of(dashboard));
 
-        Dashboard foundDashboard = service.getDashboard(1L);
+        Board foundDashboard = service.getDashboard(1L);
 
         assertNotNull(foundDashboard);
         assertEquals("Test Dashboard", foundDashboard.getName());
@@ -70,10 +70,10 @@ public class DashboardServiceTest {
     @Test
     @DisplayName("Get Dashboard by Name: should return dashboard if found")
     void getDashboardByNameTest() throws BoardmasterException {
-        Dashboard dashboard = new Dashboard("Test Dashboard");
+        Board dashboard = new Board("Test Dashboard");
         when(repository.findByName("Test Dashboard")).thenReturn(Optional.of(dashboard));
 
-        Dashboard foundDashboard = service.getDashboard("Test Dashboard");
+        Board foundDashboard = service.getDashboard("Test Dashboard");
 
         assertNotNull(foundDashboard);
         assertEquals("Test Dashboard", foundDashboard.getName());
@@ -92,11 +92,11 @@ public class DashboardServiceTest {
     @Test
     @DisplayName("Get All Dashboards: should return list of dashboards")
     void getAllDashboardsTest() {
-        Dashboard dashboard1 = new Dashboard("Dashboard 1");
-        Dashboard dashboard2 = new Dashboard("Dashboard 2");
+        Board dashboard1 = new Board("Dashboard 1");
+        Board dashboard2 = new Board("Dashboard 2");
         when(repository.findAll()).thenReturn(Arrays.asList(dashboard1, dashboard2));
 
-        List<Dashboard> dashboards = service.getAllDashboards();
+        List<Board> dashboards = service.getAllDashboards();
 
         assertNotNull(dashboards);
         assertEquals(2, dashboards.size());
@@ -106,10 +106,10 @@ public class DashboardServiceTest {
     @Test
     @DisplayName("Delete Dashboard by ID: should delete dashboard if found")
     void deleteDashboardByIdTest() throws BoardmasterException {
-        Dashboard dashboard = new Dashboard("Test Dashboard");
+        Board dashboard = new Board("Test Dashboard");
         when(repository.findById(1L)).thenReturn(Optional.of(dashboard));
 
-        Dashboard deletedDashboard = service.deleteDashboard(1L);
+        Board deletedDashboard = service.deleteDashboard(1L);
 
         assertNotNull(deletedDashboard);
         assertEquals("Test Dashboard", deletedDashboard.getName());
@@ -124,16 +124,16 @@ public class DashboardServiceTest {
 
         assertThrows(BoardmasterException.class, () -> service.deleteDashboard(1L));
         verify(repository, times(1)).findById(1L);
-        verify(repository, times(0)).delete(any(Dashboard.class));
+        verify(repository, times(0)).delete(any(Board.class));
     }
 
     @Test
     @DisplayName("Delete Dashboard by Name: should delete dashboard if found")
     void deleteDashboardByNameTest() throws BoardmasterException {
-        Dashboard dashboard = new Dashboard("Test Dashboard");
+        Board dashboard = new Board("Test Dashboard");
         when(repository.findByName("Test Dashboard")).thenReturn(Optional.of(dashboard));
 
-        Dashboard deletedDashboard = service.deleteDashboard("Test Dashboard");
+        Board deletedDashboard = service.deleteDashboard("Test Dashboard");
 
         assertNotNull(deletedDashboard);
         assertEquals("Test Dashboard", deletedDashboard.getName());
@@ -148,21 +148,21 @@ public class DashboardServiceTest {
 
         assertThrows(BoardmasterException.class, () -> service.deleteDashboard("Test Dashboard"));
         verify(repository, times(1)).findByName("Test Dashboard");
-        verify(repository, times(0)).delete(any(Dashboard.class));
+        verify(repository, times(0)).delete(any(Board.class));
     }
 
     @Test
     @DisplayName("Change Dashboard Name: should update the dashboard name")
     void changeDashboardNameTest() throws BoardmasterException {
-        Dashboard dashboard = new Dashboard("Old Name");
+        Board dashboard = new Board("Old Name");
         when(repository.findByName("Old Name")).thenReturn(Optional.of(dashboard));
-        when(repository.save(any(Dashboard.class))).thenReturn(dashboard);
+        when(repository.save(any(Board.class))).thenReturn(dashboard);
 
-        Dashboard updatedDashboard = service.changeDashboardName("Old Name");
+        Board updatedDashboard = service.changeDashboardName("Old Name");
 
         assertNotNull(updatedDashboard);
         assertEquals("Old Name", updatedDashboard.getName());
         verify(repository, times(1)).findByName("Old Name");
-        verify(repository, times(1)).save(any(Dashboard.class));
+        verify(repository, times(1)).save(any(Board.class));
     }
 }

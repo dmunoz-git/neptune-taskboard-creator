@@ -1,9 +1,10 @@
 package com.neptune.taskboard.test.unit.controller;
 
-import com.neptune.taskboard.unit.controller.DashboardController;
-import com.neptune.taskboard.unit.entity.Dashboard;
-import com.neptune.taskboard.unit.exception.BoardmasterException;
-import com.neptune.taskboard.unit.service.DashboardService;
+
+import com.neptune.taskboard.controller.BoardController;
+import com.neptune.taskboard.entity.Board;
+import com.neptune.taskboard.exception.BoardmasterException;
+import com.neptune.taskboard.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,19 +21,19 @@ import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(DashboardController.class)
+@WebMvcTest(BoardController.class)
 class BoardControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private DashboardService service;
+    private BoardService service;
 
-    private Dashboard dashboard;
+    private Board dashboard;
 
     @BeforeEach
     void setUp() {
-        this.dashboard = new Dashboard("Name");
+        this.dashboard = new Board("Name");
     }
 
     @Test
@@ -93,7 +94,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Get All Dashboards: should return list of dashboards")
     public void testGetAllDashboards() throws Exception {
-        List<Dashboard> dashboards = Arrays.asList(new Dashboard("Dashboard1"), new Dashboard("Dashboard2"));
+        List<Board> dashboards = Arrays.asList(new Board("Dashboard1"), new Board("Dashboard2"));
         Mockito.when(service.getAllDashboards()).thenReturn(dashboards);
 
         mockMvc.perform(get("/api/dashboard/all")

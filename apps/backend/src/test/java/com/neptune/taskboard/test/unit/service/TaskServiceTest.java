@@ -1,11 +1,11 @@
 package com.neptune.taskboard.test.unit.service;
 
-import com.neptune.taskboard.unit.entity.Dashboard;
-import com.neptune.taskboard.unit.entity.Task;
-import com.neptune.taskboard.unit.exception.BoardmasterException;
-import com.neptune.taskboard.unit.repository.IDashboardRepository;
-import com.neptune.taskboard.unit.repository.ITaskRepository;
-import com.neptune.taskboard.unit.service.TaskService;
+import com.neptune.taskboard.entity.Board;
+import com.neptune.taskboard.repository.IBoardRepository;
+import com.neptune.taskboard.entity.Task;
+import com.neptune.taskboard.exception.BoardmasterException;
+import com.neptune.taskboard.repository.ITaskRepository;
+import com.neptune.taskboard.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class TaskServiceTest {
     ITaskRepository taskRepository;
 
     @Mock
-    IDashboardRepository dashboardRepository;
+    IBoardRepository dashboardRepository;
 
     @InjectMocks
     private TaskService service;
@@ -67,7 +67,7 @@ public class TaskServiceTest {
         task.setName("New Task");
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        Dashboard dashboard = new Dashboard("Test Dashboard");
+        Board dashboard = new Board("Test Dashboard");
         dashboard.setId(1L);
         when(dashboardRepository.findById(1L)).thenReturn(Optional.of(dashboard));
 

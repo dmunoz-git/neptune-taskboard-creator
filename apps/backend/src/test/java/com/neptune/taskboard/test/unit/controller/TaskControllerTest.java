@@ -1,10 +1,10 @@
 package com.neptune.taskboard.test.unit.controller;
 
-import com.neptune.taskboard.unit.controller.TaskController;
-import com.neptune.taskboard.unit.entity.Dashboard;
-import com.neptune.taskboard.unit.entity.Task;
-import com.neptune.taskboard.unit.exception.BoardmasterException;
-import com.neptune.taskboard.unit.service.TaskService;
+import com.neptune.taskboard.controller.TaskController;
+import com.neptune.taskboard.entity.Board;
+import com.neptune.taskboard.entity.Task;
+import com.neptune.taskboard.exception.BoardmasterException;
+import com.neptune.taskboard.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,14 +31,14 @@ class TaskControllerTest {
     private TaskService taskService;
 
     private Task task;
-    private Dashboard dashboard;
+    private Board dashboard;
 
     @BeforeEach
     void setUp() {
         this.task = new Task();
         this.task.setName("Test Task");
 
-        this.dashboard = new Dashboard("Test Dashboard");
+        this.dashboard = new Board("Test Dashboard");
         this.dashboard.setId(1L);
     }
 
