@@ -1,8 +1,9 @@
-package com.neptune.taskboard.service;
+package com.neptune.taskboard.test.unit.service;
 
-import com.neptune.taskboard.entity.State;
 import com.neptune.taskboard.exception.BoardmasterException;
 import com.neptune.taskboard.repository.IStateRepository;
+import com.neptune.taskboard.service.StateService;
+import com.neptune.taskboard.entity.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class StateServiceTests {
+public class StateServiceTest {
 
     @Mock
     IStateRepository repository;

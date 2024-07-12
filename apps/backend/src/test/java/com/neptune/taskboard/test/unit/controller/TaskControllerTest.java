@@ -1,6 +1,7 @@
-package com.neptune.taskboard.controller;
+package com.neptune.taskboard.test.unit.controller;
 
-import com.neptune.taskboard.entity.Dashboard;
+import com.neptune.taskboard.controller.TaskController;
+import com.neptune.taskboard.entity.Board;
 import com.neptune.taskboard.entity.Task;
 import com.neptune.taskboard.exception.BoardmasterException;
 import com.neptune.taskboard.service.TaskService;
@@ -30,14 +31,14 @@ class TaskControllerTest {
     private TaskService taskService;
 
     private Task task;
-    private Dashboard dashboard;
+    private Board dashboard;
 
     @BeforeEach
     void setUp() {
         this.task = new Task();
         this.task.setName("Test Task");
 
-        this.dashboard = new Dashboard("Test Dashboard");
+        this.dashboard = new Board("Test Dashboard");
         this.dashboard.setId(1L);
     }
 

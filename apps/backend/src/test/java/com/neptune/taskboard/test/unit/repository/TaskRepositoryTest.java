@@ -1,8 +1,11 @@
-package com.neptune.taskboard.repository;
+package com.neptune.taskboard.test.unit.repository;
 
-import com.neptune.taskboard.entity.Dashboard;
+import com.neptune.taskboard.entity.Board;
 import com.neptune.taskboard.entity.State;
 import com.neptune.taskboard.entity.Task;
+import com.neptune.taskboard.repository.IBoardRepository;
+import com.neptune.taskboard.repository.IStateRepository;
+import com.neptune.taskboard.repository.ITaskRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -21,18 +24,18 @@ public class TaskRepositoryTest {
     ITaskRepository repository;
 
     @Autowired
-    IDashboardRepository dashboardRepository;
+    IBoardRepository dashboardRepository;
 
     @Autowired
     IStateRepository stateRepository;
 
     private Task task;
-    private Dashboard dashboard;
+    private Board dashboard;
     private State state;
 
     @BeforeEach
     public void setUp() {
-        dashboard = new Dashboard("Test Dashboard");
+        dashboard = new Board("Test Dashboard");
         dashboardRepository.save(dashboard);
 
         state = new State();

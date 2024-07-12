@@ -21,5 +21,5 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "dashboard_id")
-    private Dashboard dashboard;
+    private Board dashboard;
 }

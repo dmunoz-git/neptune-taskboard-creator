@@ -2,10 +2,12 @@ package com.neptune.taskboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
 @SpringBootApplication
-public class BoardMasterApplication {
+public class TaskBoardApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BoardMasterApplication.class, args);
+        SpringApplication.run(TaskBoardApplication.class, args);
     }
 }

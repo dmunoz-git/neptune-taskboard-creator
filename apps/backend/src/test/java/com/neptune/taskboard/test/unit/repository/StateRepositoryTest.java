@@ -1,6 +1,7 @@
-package com.neptune.taskboard.repository;
+package com.neptune.taskboard.test.unit.repository;
 
 import com.neptune.taskboard.entity.State;
+import com.neptune.taskboard.repository.IStateRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Assertions;

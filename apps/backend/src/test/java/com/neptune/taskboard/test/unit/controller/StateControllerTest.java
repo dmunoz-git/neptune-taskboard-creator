@@ -1,5 +1,6 @@
-package com.neptune.taskboard.controller;
+package com.neptune.taskboard.test.unit.controller;
 
+import com.neptune.taskboard.controller.StateController;
 import com.neptune.taskboard.entity.State;
 import com.neptune.taskboard.exception.BoardmasterException;
 import com.neptune.taskboard.service.StateService;

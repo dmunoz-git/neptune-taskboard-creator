@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @Getter
 @NoArgsConstructor
-public class Dashboard {
+public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -24,7 +24,7 @@ public class Dashboard {
     private List<Task> tasks;
 
     //Constructors
-    public Dashboard(String name){
+    public Board(String name){
         this.name = name;
         this.tasks = new ArrayList<Task>();
     }
