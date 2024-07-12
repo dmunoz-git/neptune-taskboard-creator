@@ -35,7 +35,7 @@ public class TaskService implements ITaskService {
         if (dashboard.isEmpty()) {
             throw new BoardmasterException("Dashboard not found");
         }
-        task.setDashboard(dashboard.get());
+        task.setBoard(dashboard.get());
         return taskRepository.save(task);
     }
 

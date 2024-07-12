@@ -15,8 +15,8 @@ public class BoardService implements IBoardService {
     private IBoardRepository repository;
 
     @Override
-    public Board create(String name) {
-        return this.repository.save(new Board(name));
+    public Board create(Board board) {
+        return this.repository.save(board);
     }
 
     @Override

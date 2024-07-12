@@ -35,10 +35,10 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Create Dashboard: should create and return a new dashboard")
     void createDashboardTest() {
-        Board dashboard = new Board("Test Dashboard");
+        Board dashboard = Board.builder().name("Test Dashboard").build();
         when(repository.save(any(Board.class))).thenReturn(dashboard);
 
-        Board createdDashboard = service.create("Test Dashboard");
+        Board createdDashboard = service.create(dashboard);
 
         assertNotNull(createdDashboard);
         assertEquals("Test Dashboard", createdDashboard.getName());
@@ -48,7 +48,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Get Dashboard by ID: should return dashboard if found")
     void getDashboardByIdTest() throws BoardmasterException {
-        Board dashboard = new Board("Test Dashboard");
+        Board dashboard = Board.builder().name("Test Dashboard").build();
         when(repository.findById(1L)).thenReturn(Optional.of(dashboard));
 
         Board foundDashboard = service.getDashboard(1L);
@@ -70,7 +70,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Get Dashboard by Name: should return dashboard if found")
     void getDashboardByNameTest() throws BoardmasterException {
-        Board dashboard = new Board("Test Dashboard");
+        Board dashboard = Board.builder().name("Test Dashboard").build();
         when(repository.findByName("Test Dashboard")).thenReturn(Optional.of(dashboard));
 
         Board foundDashboard = service.getDashboard("Test Dashboard");
@@ -92,8 +92,8 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Get All Dashboards: should return list of dashboards")
     void getAllDashboardsTest() {
-        Board dashboard1 = new Board("Dashboard 1");
-        Board dashboard2 = new Board("Dashboard 2");
+        Board dashboard1 = Board.builder().name("Dashboard 1").build();
+        Board dashboard2 = Board.builder().name("Dashboard 2").build();
         when(repository.findAll()).thenReturn(Arrays.asList(dashboard1, dashboard2));
 
         List<Board> dashboards = service.getAllDashboards();
@@ -106,7 +106,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Delete Dashboard by ID: should delete dashboard if found")
     void deleteDashboardByIdTest() throws BoardmasterException {
-        Board dashboard = new Board("Test Dashboard");
+        Board dashboard = Board.builder().name("Test Dashboard").build();
         when(repository.findById(1L)).thenReturn(Optional.of(dashboard));
 
         Board deletedDashboard = service.deleteDashboard(1L);
@@ -130,7 +130,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Delete Dashboard by Name: should delete dashboard if found")
     void deleteDashboardByNameTest() throws BoardmasterException {
-        Board dashboard = new Board("Test Dashboard");
+        Board dashboard = Board.builder().name("Test Dashboard").build();
         when(repository.findByName("Test Dashboard")).thenReturn(Optional.of(dashboard));
 
         Board deletedDashboard = service.deleteDashboard("Test Dashboard");
@@ -154,7 +154,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Change Dashboard Name: should update the dashboard name")
     void changeDashboardNameTest() throws BoardmasterException {
-        Board dashboard = new Board("Old Name");
+        Board dashboard = Board.builder().name("Old Name").build();
         when(repository.findByName("Old Name")).thenReturn(Optional.of(dashboard));
         when(repository.save(any(Board.class))).thenReturn(dashboard);
 

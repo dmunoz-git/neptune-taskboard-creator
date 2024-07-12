@@ -67,7 +67,7 @@ public class TaskServiceTest {
         task.setName("New Task");
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        Board dashboard = new Board("Test Dashboard");
+        Board dashboard = Board.builder().name("Test Dashboard").build();
         dashboard.setId(1L);
         when(dashboardRepository.findById(1L)).thenReturn(Optional.of(dashboard));
 

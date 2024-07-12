@@ -1,31 +1,56 @@
 package com.neptune.boards.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Long id;  // Private id for table
+
+    @NotNull
+    private UUID uuid; // Board identifier specified by the client
 
     @Column(unique = true, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private String description;
+
+    private LocalDate createdAt;
+
+    private LocalDate updatedAt;
+
+    /*
+    * TODO: Create an entity to Manage TemplateStates
+    *
+    * @OneToMany(mappedBy="board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    * private TemplateStates templateStates
+    * */
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
 
-    //Constructors
-    public Board(String name){
-        this.name = name;
-        this.tasks = new ArrayList<Task>();
+    // Life cycle callbacks
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDate.now();
+        this.updatedAt = LocalDate.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDate.now();
     }
 }

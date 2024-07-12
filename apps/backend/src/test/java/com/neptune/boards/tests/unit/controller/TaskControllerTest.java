@@ -31,15 +31,15 @@ class TaskControllerTest {
     private TaskService taskService;
 
     private Task task;
-    private Board dashboard;
+    private Board board;
 
     @BeforeEach
     void setUp() {
         this.task = new Task();
         this.task.setName("Test Task");
 
-        this.dashboard = new Board("Test Dashboard");
-        this.dashboard.setId(1L);
+        this.board =  Board.builder().name("Test Dashboard").build();
+        this.board.setId(1L);
     }
 
     @Test

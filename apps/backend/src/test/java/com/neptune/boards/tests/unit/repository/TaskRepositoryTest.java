@@ -35,7 +35,7 @@ public class TaskRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        dashboard = new Board("Test Dashboard");
+        dashboard =  Board.builder().name("Test Dashboard").build();
         dashboardRepository.save(dashboard);
 
         state = new State();
@@ -45,7 +45,7 @@ public class TaskRepositoryTest {
         task = new Task();
         task.setName("Test Task");
         task.setDescription("Test Description");
-        task.setDashboard(dashboard);
+        task.setBoard(dashboard);
         task.setState(state);
         repository.save(task);
     }
@@ -56,7 +56,7 @@ public class TaskRepositoryTest {
         Task newTask = new Task();
         newTask.setName("New Test Task");
         newTask.setDescription("New Test Description");
-        newTask.setDashboard(dashboard);
+        newTask.setBoard(dashboard);
         newTask.setState(state);
 
         Task savedTask = repository.save(newTask);

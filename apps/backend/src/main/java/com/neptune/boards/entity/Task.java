@@ -20,6 +20,6 @@ public class Task {
     private State state;
 
     @ManyToOne
-    @JoinColumn(name = "dashboard_id")
-    private Board dashboard;
+    @JoinColumn(name = "board_id")
+    private Board board;
 }

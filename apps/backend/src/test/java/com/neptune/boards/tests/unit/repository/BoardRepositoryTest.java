@@ -23,38 +23,43 @@ public class BoardRepositoryTest {
     @Autowired
     EntityManager entityManager;
 
-    private Board dashboard;
+    private Board board;
 
     @BeforeEach
     public void setUp() {
-        dashboard = new Board("Test Dashboard");
-        repository.save(dashboard);
+        this.board = Board.builder()
+                .name("Test board")
+                .description("Test board description")
+                .build();
     }
 
     @Test
     @DisplayName("Create: should create dashboard in db")
     public void saveDashboardTest() {
-        Board newDashboard = new Board("New Test Dashboard");
+        // Save board
+        Board savedBoard =  repository.save(board);
 
-        Board savedDashboard = repository.save(newDashboard);
-
-        Assertions.assertNotNull(savedDashboard);
-        Assertions.assertEquals("New Test Dashboard", savedDashboard.getName());
+        // Test if have been saved and is equals
+        Assertions.assertNotNull(savedBoard);
+        Assertions.assertEquals("Test board", savedBoard.getName());
     }
 
     @Test
     @DisplayName("Find: should find dashboard by id")
     public void findDashboardByIdTest() {
-        Optional<Board> foundDashboard = repository.findById(dashboard.getId());
+        Optional<Board> foundDashboard = repository.findById(board.getId());
 
         Assertions.assertTrue(foundDashboard.isPresent());
-        Assertions.assertEquals(dashboard.getId(), foundDashboard.get().getId());
+        Assertions.assertEquals(board.getId(), foundDashboard.get().getId());
     }
 
     @Test
     @DisplayName("Exception: should not be able to create a dashboard with the same name")
     public void saveDuplicateDashboardNameTest() {
-        Board duplicateDashboard = new Board("Test Dashboard");
+        Board duplicateDashboard = Board.builder()
+                .name("Test board")
+                .description("Test board description")
+                .build();
 
         DataIntegrityViolationException exception = Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
             repository.saveAndFlush(duplicateDashboard);
@@ -76,9 +81,9 @@ public class BoardRepositoryTest {
     @Test
     @DisplayName("Update: should update dashboard")
     public void updateDashboardTest() {
-        dashboard.setName("Updated Dashboard");
+        board.setName("Updated Dashboard");
 
-        Board updatedDashboard = repository.save(dashboard);
+        Board updatedDashboard = repository.save(board);
 
         Assertions.assertNotNull(updatedDashboard);
         Assertions.assertEquals("Updated Dashboard", updatedDashboard.getName());
@@ -87,9 +92,9 @@ public class BoardRepositoryTest {
     @Test
     @DisplayName("Delete: should delete dashboard by id")
     public void deleteDashboardByIdTest() {
-        repository.deleteById(dashboard.getId());
+        repository.deleteById(board.getId());
 
-        Optional<Board> foundDashboard = repository.findById(dashboard.getId());
+        Optional<Board> foundDashboard = repository.findById(board.getId());
 
         Assertions.assertFalse(foundDashboard.isPresent());
     }

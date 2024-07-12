@@ -6,7 +6,7 @@ import com.neptune.boards.exception.BoardmasterException;
 import java.util.List;
 
 public interface IBoardService {
-    public Board create(String name);
+    public Board create(Board board);
     public Board getDashboard(Long id) throws BoardmasterException;
     public Board getDashboard(String name) throws BoardmasterException;
     public List<Board> getAllDashboards();

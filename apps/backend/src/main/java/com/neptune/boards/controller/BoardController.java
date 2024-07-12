@@ -18,8 +18,8 @@ public class BoardController {
     private BoardService service;
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> createDashboard(@RequestParam String name) {
-        return new ResponseEntity<>(service.create(name), HttpStatus.CREATED);
+    public ResponseEntity<Board> createDashboard(@RequestBody Board board) {
+        return new ResponseEntity<>(service.create(board), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
