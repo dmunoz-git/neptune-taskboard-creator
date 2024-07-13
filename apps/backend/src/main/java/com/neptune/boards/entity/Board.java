@@ -1,8 +1,7 @@
 package com.neptune.boards.entity;
 
-import com.neptune.boards.dto.BoardUpdateDTO;
+import com.neptune.boards.dto.BoardRequestDTO;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -55,7 +54,7 @@ public class Board {
     }
 
     // Update method from DTO
-    public Board updateFromDto(BoardUpdateDTO dto) {
+    public Board updateFromDto(BoardRequestDTO dto) {
         BoardBuilder builder = Board.builder()
                 .id(this.id)
                 .UUID(this.UUID)

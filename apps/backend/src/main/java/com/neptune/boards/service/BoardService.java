@@ -1,6 +1,6 @@
 package com.neptune.boards.service;
 
-import com.neptune.boards.dto.BoardUpdateDTO;
+import com.neptune.boards.dto.BoardRequestDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.BoardRepository;
@@ -18,7 +18,12 @@ public class BoardService implements IBoardService {
     private BoardRepository repository;
 
     @Override
-    public Board createBoard(Board board) {
+    public Board createBoard(UUID uuid, BoardRequestDTO requestDTO) {
+        Board board = Board.builder()
+                .UUID(uuid)
+                .name(requestDTO.getName())
+                .description(requestDTO.getDescription())
+                .build();
         return this.repository.save(board);
     }
 
@@ -47,7 +52,7 @@ public class BoardService implements IBoardService {
 
 
     @Override
-    public Board updateBoard(UUID uuid, BoardUpdateDTO dto) throws NeptuneBoardsException {
+    public Board updateBoard(UUID uuid, BoardRequestDTO dto) throws NeptuneBoardsException {
         Board foundedBoard = this.getBoard(uuid);
         Board updatedBoard = foundedBoard.updateFromDto(dto);
         return repository.save(updatedBoard);

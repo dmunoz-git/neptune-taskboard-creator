@@ -1,6 +1,6 @@
 package com.neptune.boards.tests.unit.service;
 
-import com.neptune.boards.dto.BoardUpdateDTO;
+import com.neptune.boards.dto.BoardRequestDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.BoardRepository;
@@ -117,7 +117,7 @@ public class BoardServiceTest {
     @DisplayName("Update Board: should update a board if some of the updatable fields are null")
     void updateBoardTest() throws NeptuneBoardsException {
         // Create the updated board data and the actual board
-        BoardUpdateDTO boardRequest = BoardUpdateDTO.builder().name("Updated name").build();
+        BoardRequestDTO boardRequest = BoardRequestDTO.builder().name("Updated name").build();
         UUID boardUUID = UUID.randomUUID();
         Board board = Board.builder().UUID(boardUUID).name("Old name").description("This is a description").build();
 

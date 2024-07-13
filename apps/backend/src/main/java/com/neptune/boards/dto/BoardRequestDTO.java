@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class BoardUpdateDTO {
+public class BoardRequestDTO {
     private String name;
     private String description;
 }

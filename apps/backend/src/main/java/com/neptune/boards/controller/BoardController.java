@@ -1,6 +1,6 @@
 package com.neptune.boards.controller;
 
-import com.neptune.boards.dto.BoardUpdateDTO;
+import com.neptune.boards.dto.BoardRequestDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.BoardService;
@@ -19,9 +19,9 @@ public class BoardController {
     @Autowired
     private BoardService service;
 
-    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> createBoard(@RequestBody Board board) {
-        return new ResponseEntity<>(service.createBoard(board), HttpStatus.CREATED);
+    @PostMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Board> createBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO requestDTO) {
+        return new ResponseEntity<>(service.createBoard(uuid, requestDTO), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -41,7 +41,7 @@ public class BoardController {
 
     // Cambiar el nombre de un Dashboard
     @PutMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardUpdateDTO dto) throws NeptuneBoardsException {
+    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO dto) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.updateBoard(uuid, dto), HttpStatus.OK);
     }
 }
