@@ -1,5 +1,6 @@
 package com.neptune.boards.controller;
 
+import com.neptune.boards.dto.BoardUpdateDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.BoardmasterException;
 import com.neptune.boards.service.BoardService;
@@ -10,47 +11,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/api/board")
 public class BoardController {
     @Autowired
     private BoardService service;
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> createDashboard(@RequestBody Board board) {
-        return new ResponseEntity<>(service.create(board), HttpStatus.CREATED);
+    public ResponseEntity<Board> createBoard(@RequestBody Board board) {
+        return new ResponseEntity<>(service.createBoard(board), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> getDashboardById(@PathVariable Long id) throws BoardmasterException {
-        return new ResponseEntity<>(service.getDashboard(id), HttpStatus.OK);
+    @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Board> getBoard(@PathVariable UUID uuid) throws BoardmasterException {
+        return new ResponseEntity<>(service.getBoard(uuid), HttpStatus.OK);
     }
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> getDashboardByName(@RequestParam String name) throws BoardmasterException {
-        return new ResponseEntity<>(service.getDashboard(name), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/all", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "/list", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<Board>> getAllDashboards() {
-        return new ResponseEntity<>(service.getAllDashboards(), HttpStatus.OK);
+        return new ResponseEntity<>(service.getAllBoards(), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> deleteDashboardById(@PathVariable Long id) throws BoardmasterException {
-        return new ResponseEntity<>(service.deleteDashboard(id), HttpStatus.OK);
-    }
-
-    // Eliminar un Dashboard por nombre
-    @DeleteMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> deleteDashboardByName(@RequestParam String name) throws BoardmasterException {
-        return new ResponseEntity<>(service.deleteDashboard(name), HttpStatus.OK);
+    @DeleteMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Board> deleteDashboardById(@PathVariable UUID uuid) throws BoardmasterException {
+        return new ResponseEntity<>(service.deleteBoard(uuid), HttpStatus.OK);
     }
 
     // Cambiar el nombre de un Dashboard
-    @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> changeDashboardName(@RequestParam String currentName, @RequestParam String newName) throws BoardmasterException {
-        return new ResponseEntity<>(service.changeDashboardName(newName), HttpStatus.OK);
+    @PutMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardUpdateDTO dto) throws BoardmasterException {
+        return new ResponseEntity<>(service.updateBoard(uuid, dto), HttpStatus.OK);
     }
 }
