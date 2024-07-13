@@ -3,9 +3,9 @@ package com.neptune.boards.tests.unit.repository;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.entity.Task;
-import com.neptune.boards.repository.IBoardRepository;
-import com.neptune.boards.repository.IStateRepository;
-import com.neptune.boards.repository.ITaskRepository;
+import com.neptune.boards.repository.BoardRepository;
+import com.neptune.boards.repository.StateRepository;
+import com.neptune.boards.repository.TaskRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -21,13 +21,13 @@ import java.util.Optional;
 public class TaskRepositoryTest {
 
     @Autowired
-    ITaskRepository repository;
+    TaskRepository repository;
 
     @Autowired
-    IBoardRepository dashboardRepository;
+    BoardRepository dashboardRepository;
 
     @Autowired
-    IStateRepository stateRepository;
+    StateRepository stateRepository;
 
     private Task task;
     private Board dashboard;

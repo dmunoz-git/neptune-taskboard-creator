@@ -2,7 +2,7 @@ package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.BoardmasterException;
-import com.neptune.boards.repository.IBoardRepository;
+import com.neptune.boards.repository.BoardRepository;
 import com.neptune.boards.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 public class BoardServiceTest {
 
     @Mock
-    IBoardRepository repository;
+    BoardRepository repository;
 
     @InjectMocks
     private BoardService service;

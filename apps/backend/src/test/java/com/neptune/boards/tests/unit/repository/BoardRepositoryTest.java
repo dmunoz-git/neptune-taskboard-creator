@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.unit.repository;
 
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.repository.IBoardRepository;
+import com.neptune.boards.repository.BoardRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.*;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BoardRepositoryTest {
 
     @Autowired
-    IBoardRepository repository;
+    BoardRepository repository;
 
     @Autowired
     EntityManager entityManager;

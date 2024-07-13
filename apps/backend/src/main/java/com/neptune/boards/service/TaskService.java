@@ -3,8 +3,8 @@ package com.neptune.boards.service;
 import com.neptune.boards.entity.Task;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.BoardmasterException;
-import com.neptune.boards.repository.ITaskRepository;
-import com.neptune.boards.repository.IBoardRepository;
+import com.neptune.boards.repository.TaskRepository;
+import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import java.util.Optional;
 public class TaskService implements ITaskService {
 
     @Autowired
-    private ITaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
     @Autowired
-    private IBoardRepository dashboardRepository;
+    private BoardRepository dashboardRepository;
 
     @Override
     public Task getTask(Long id) throws BoardmasterException {

@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.unit.repository;
 
 import com.neptune.boards.entity.State;
-import com.neptune.boards.repository.IStateRepository;
+import com.neptune.boards.repository.StateRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ public class StateRepositoryTest {
     private State savedState;
 
     @Autowired
-    IStateRepository repository;
+    StateRepository repository;
 
     @Autowired
     EntityManager entityManager;

@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.exception.BoardmasterException;
-import com.neptune.boards.repository.IStateRepository;
+import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.service.StateService;
 import com.neptune.boards.entity.State;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class StateServiceTest {
 
     @Mock
-    IStateRepository repository;
+    StateRepository repository;
 
     @InjectMocks
     private StateService service;

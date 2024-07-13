@@ -2,7 +2,7 @@ package com.neptune.boards.service;
 
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.BoardmasterException;
-import com.neptune.boards.repository.IBoardRepository;
+import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class BoardService implements IBoardService {
     @Autowired
-    private IBoardRepository repository;
+    private BoardRepository repository;
 
     @Override
     public Board create(Board board) {

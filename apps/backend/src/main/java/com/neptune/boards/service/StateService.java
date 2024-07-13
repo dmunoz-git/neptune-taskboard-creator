@@ -2,7 +2,7 @@ package com.neptune.boards.service;
 
 import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.BoardmasterException;
-import com.neptune.boards.repository.IStateRepository;
+import com.neptune.boards.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class StateService implements IStateService{
     @Autowired
-    IStateRepository repository;
+    StateRepository repository;
 
     @Override
     public State getState(Long id) throws BoardmasterException {

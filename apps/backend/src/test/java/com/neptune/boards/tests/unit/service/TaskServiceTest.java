@@ -1,10 +1,10 @@
 package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.repository.IBoardRepository;
+import com.neptune.boards.repository.BoardRepository;
 import com.neptune.boards.entity.Task;
 import com.neptune.boards.exception.BoardmasterException;
-import com.neptune.boards.repository.ITaskRepository;
+import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.*;
 public class TaskServiceTest {
 
     @Mock
-    ITaskRepository taskRepository;
+    TaskRepository taskRepository;
 
     @Mock
-    IBoardRepository dashboardRepository;
+    BoardRepository dashboardRepository;
 
     @InjectMocks
     private TaskService service;
