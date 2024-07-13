@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ public class Board {
     private Long id;  // Private id for table
 
     @NotNull
-    private UUID uuid; // Board identifier specified by the client
+    private UUID UUID; // Board identifier specified by the client
 
     @Column(unique = true, nullable = false)
     private String name;

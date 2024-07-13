@@ -3,14 +3,18 @@ package com.neptune.boards.tests.unit.repository;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.repository.IBoardRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
 
+import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -28,29 +32,59 @@ public class BoardRepositoryTest {
     @BeforeEach
     public void setUp() {
         this.board = Board.builder()
+                .UUID(UUID.randomUUID())
                 .name("Test board")
                 .description("Test board description")
                 .build();
     }
 
     @Test
-    @DisplayName("Create: should create dashboard in db")
-    public void saveDashboardTest() {
-        // Save board
-        Board savedBoard =  repository.save(board);
+    @DisplayName("Create Board: should save a board and autoconfigure the dates")
+    public void saveBoardTest() {
+        entityManager.persist(this.board);
+        entityManager.flush();
 
-        // Test if have been saved and is equals
-        Assertions.assertNotNull(savedBoard);
-        Assertions.assertEquals("Test board", savedBoard.getName());
+        Board savedBoard = repository.findByUUID(board.getUUID()).orElseThrow();
+
+        // Check if the data were saved correctly
+        assertEquals(this.board.getUUID(), savedBoard.getUUID());
+        assertEquals(this.board.getName(), savedBoard.getName());
+        assertEquals(this.board.getDescription(), savedBoard.getDescription());
+
+        // Check if fields createdAt and updatedAt were save correctly
+        LocalDate currentDate = LocalDate.now();
+        assertEquals(currentDate, savedBoard.getCreatedAt());
+        assertEquals(currentDate, savedBoard.getUpdatedAt());
+
+        // Check if the db sets a correct id
+        assertNotNull(savedBoard.getId());
+        assertInstanceOf(Long.class, savedBoard.getId());
     }
 
     @Test
-    @DisplayName("Find: should find dashboard by id")
-    public void findDashboardByIdTest() {
-        Optional<Board> foundDashboard = repository.findById(board.getId());
+    @DisplayName("Exception Board: should not save a board without uuid")
+    public void saveBoardWithoutUUIDTest() {
+        // Create board without required elements as uuid
+        Board newBoard = Board.builder().name("Test board without UUID").build();
 
-        Assertions.assertTrue(foundDashboard.isPresent());
-        Assertions.assertEquals(board.getId(), foundDashboard.get().getId());
+        // Test if the validation notNull is working
+        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> {
+            entityManager.persist(newBoard);
+            entityManager.flush(); // Flush to force the database interaction
+        });
+
+    }
+
+    @Test
+    @DisplayName("Find Board: should find dashboard by UUID")
+    public void findDashboardByIdTest() {
+        // Save the board and check if exist
+        repository.save(this.board);
+
+        Optional<Board> foundDashboard = repository.findByUUID(this.board.getUUID());
+
+        assertTrue(foundDashboard.isPresent());
+        Assertions.assertEquals(this.board.getUUID(), foundDashboard.get().getUUID());
     }
 
     @Test
@@ -61,7 +95,7 @@ public class BoardRepositoryTest {
                 .description("Test board description")
                 .build();
 
-        DataIntegrityViolationException exception = Assertions.assertThrows(DataIntegrityViolationException.class, () -> {
+        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> {
             repository.saveAndFlush(duplicateDashboard);
             entityManager.flush();
         });
@@ -70,32 +104,30 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find: should find dashboard by name")
-    public void findDashboardByNameTest() {
-        Optional<Board> foundDashboard = repository.findByName("Test Dashboard");
-
-        Assertions.assertTrue(foundDashboard.isPresent());
-        Assertions.assertEquals("Test Dashboard", foundDashboard.get().getName());
-    }
-
-    @Test
-    @DisplayName("Update: should update dashboard")
+    @DisplayName("Update: should update dashboard and update the date")
     public void updateDashboardTest() {
-        board.setName("Updated Dashboard");
+        // Update fields name and description
+        this.board.setName("Updated Board name");
+        this.board.setDescription("Update Description");
 
-        Board updatedDashboard = repository.save(board);
+        Board updatedBoard = repository.save(this.board);
 
-        Assertions.assertNotNull(updatedDashboard);
-        Assertions.assertEquals("Updated Dashboard", updatedDashboard.getName());
+        Assertions.assertNotNull(updatedBoard);
+        Assertions.assertEquals("Updated Board name", updatedBoard.getName());
+        Assertions.assertEquals("Update Description", updatedBoard.getDescription());
+
+        // Check the field updatedAt has been updated
+        LocalDate currentDate = LocalDate.now();
+        assertEquals(currentDate, updatedBoard.getUpdatedAt());
     }
 
     @Test
-    @DisplayName("Delete: should delete dashboard by id")
+    @DisplayName("Delete: should delete dashboard by uuid")
     public void deleteDashboardByIdTest() {
-        repository.deleteById(board.getId());
+        repository.deleteByUUID(board.getUUID());
 
-        Optional<Board> foundDashboard = repository.findById(board.getId());
+        Optional<Board> foundDashboard = repository.findByUUID(board.getUUID());
 
-        Assertions.assertFalse(foundDashboard.isPresent());
+        assertFalse(foundDashboard.isPresent());
     }
 }
