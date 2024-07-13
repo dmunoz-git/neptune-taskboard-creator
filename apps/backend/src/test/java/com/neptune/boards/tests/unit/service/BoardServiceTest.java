@@ -40,18 +40,25 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Create Dashboard: should create and return a new board")
     void createBoardTest() {
+        BoardRequestDTO requestDTO = BoardRequestDTO.builder()
+                .name("Test board")
+                .description("Test board description")
+                .build();
+
+        UUID uuid = UUID.randomUUID();
+
         Board board = Board.builder()
                 .id(1L)
                 .UUID(UUID.randomUUID())
-                .name("Test Board")
-                .description("Test board description")
+                .name(requestDTO.getName())
+                .description(requestDTO.getDescription())
                 .createdAt(LocalDate.now())
                 .updatedAt(LocalDate.now())
                 .build();
 
         // Configure to mock repository and create the board
         when(repository.save(any(Board.class))).thenReturn(board);
-        Board savedBoard = service.createBoard(board);
+        Board savedBoard = service.createBoard(uuid, requestDTO);
 
         // Test if the board exists
         assertNotNull(savedBoard);
