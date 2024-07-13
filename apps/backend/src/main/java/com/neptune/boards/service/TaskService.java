@@ -2,7 +2,7 @@ package com.neptune.boards.service;
 
 import com.neptune.boards.entity.Task;
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,26 +21,26 @@ public class TaskService implements ITaskService {
     private BoardRepository dashboardRepository;
 
     @Override
-    public Task getTask(Long id) throws BoardmasterException {
+    public Task getTask(Long id) throws NeptuneBoardsException {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isEmpty()) {
-            throw new BoardmasterException("Task not found");
+            throw new NeptuneBoardsException("Task not found");
         }
         return task.get();
     }
 
     @Override
-    public Task create(Long dashboardId, Task task) throws BoardmasterException {
+    public Task create(Long dashboardId, Task task) throws NeptuneBoardsException {
         Optional<Board> dashboard = dashboardRepository.findById(dashboardId);
         if (dashboard.isEmpty()) {
-            throw new BoardmasterException("Dashboard not found");
+            throw new NeptuneBoardsException("Dashboard not found");
         }
         task.setBoard(dashboard.get());
         return taskRepository.save(task);
     }
 
     @Override
-    public Task update(Long id, Task task) throws BoardmasterException {
+    public Task update(Long id, Task task) throws NeptuneBoardsException {
         Task existingTask = getTask(id);
         existingTask.setName(task.getName());
         existingTask.setDescription(task.getDescription());
@@ -49,7 +49,7 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public Task delete(Long taskId) throws BoardmasterException {
+    public Task delete(Long taskId) throws NeptuneBoardsException {
         Task task = getTask(taskId);
         taskRepository.delete(task);
         return task;

@@ -2,7 +2,7 @@ package com.neptune.boards.tests.unit.controller;
 
 import com.neptune.boards.controller.StateController;
 import com.neptune.boards.entity.State;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.StateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +48,7 @@ class StateControllerTest {
     @Test
     @DisplayName("Get State by ID: should return not found if state does not exist")
     public void testGetStateByIdNotFound() throws Exception {
-        Mockito.when(service.getState(1L)).thenThrow(new BoardmasterException("State not found"));
+        Mockito.when(service.getState(1L)).thenThrow(new NeptuneBoardsException("State not found"));
 
         mockMvc.perform(get("/state/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -70,7 +70,7 @@ class StateControllerTest {
     @Test
     @DisplayName("Get State by Name: should return not found if state does not exist")
     public void testGetStateByNameNotFound() throws Exception {
-        Mockito.when(service.getState("Test State")).thenThrow(new BoardmasterException("State not found"));
+        Mockito.when(service.getState("Test State")).thenThrow(new NeptuneBoardsException("State not found"));
 
         mockMvc.perform(get("/state")
                         .param("name", "Test State")
@@ -104,7 +104,7 @@ class StateControllerTest {
     @Test
     @DisplayName("Delete State by ID: should return not found if state does not exist")
     public void testDeleteStateByIdNotFound() throws Exception {
-        Mockito.when(service.delete(1L)).thenThrow(new BoardmasterException("State not found"));
+        Mockito.when(service.delete(1L)).thenThrow(new NeptuneBoardsException("State not found"));
 
         mockMvc.perform(delete("/state/1")
                         .contentType(MediaType.APPLICATION_JSON))

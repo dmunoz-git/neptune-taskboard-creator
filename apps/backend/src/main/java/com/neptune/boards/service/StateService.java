@@ -1,7 +1,7 @@
 package com.neptune.boards.service;
 
 import com.neptune.boards.entity.State;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,21 +14,21 @@ public class StateService implements IStateService{
     StateRepository repository;
 
     @Override
-    public State getState(Long id) throws BoardmasterException {
+    public State getState(Long id) throws NeptuneBoardsException {
         Optional<State> state = repository.findById(id);
 
         if(state.isEmpty())
-            throw new BoardmasterException("State not found");
+            throw new NeptuneBoardsException("State not found");
 
         return state.get();
     }
 
     @Override
-    public State getState(String name) throws BoardmasterException {
+    public State getState(String name) throws NeptuneBoardsException {
         Optional<State> state = repository.findByName(name);
 
         if(state.isEmpty())
-            throw new BoardmasterException("State not found");
+            throw new NeptuneBoardsException("State not found");
 
         return state.get();
     }
@@ -39,7 +39,7 @@ public class StateService implements IStateService{
     }
 
     @Override
-    public State delete(Long id) throws BoardmasterException {
+    public State delete(Long id) throws NeptuneBoardsException {
         State state = this.getState(id);
 
         this.repository.delete(state);
@@ -48,14 +48,14 @@ public class StateService implements IStateService{
     }
 
     @Override
-    public void changeName(String name) throws BoardmasterException {
+    public void changeName(String name) throws NeptuneBoardsException {
         State state = this.getState(name);
         state.setName(name);
         this.repository.save(state);
     }
 
     @Override
-    public void updateName(Long id, String name) throws BoardmasterException {
+    public void updateName(Long id, String name) throws NeptuneBoardsException {
         State state = this.getState(id);
         state.setName(name);
         this.repository.save(state);

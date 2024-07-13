@@ -3,7 +3,7 @@ package com.neptune.boards.tests.unit.controller;
 import com.neptune.boards.controller.TaskController;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.entity.Task;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +56,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("Get Task by ID: should return not found if task does not exist")
     public void testGetTaskByIdNotFound() throws Exception {
-        Mockito.when(taskService.getTask(1L)).thenThrow(new BoardmasterException("Task not found"));
+        Mockito.when(taskService.getTask(1L)).thenThrow(new NeptuneBoardsException("Task not found"));
 
         mockMvc.perform(get("/task/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -102,7 +102,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("Delete Task by ID: should return not found if task does not exist")
     public void testDeleteTaskByIdNotFound() throws Exception {
-        Mockito.when(taskService.delete(1L)).thenThrow(new BoardmasterException("Task not found"));
+        Mockito.when(taskService.delete(1L)).thenThrow(new NeptuneBoardsException("Task not found"));
 
         mockMvc.perform(delete("/task/1")
                         .contentType(MediaType.APPLICATION_JSON))

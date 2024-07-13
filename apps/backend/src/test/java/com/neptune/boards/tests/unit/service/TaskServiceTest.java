@@ -3,7 +3,7 @@ package com.neptune.boards.tests.unit.service;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.repository.BoardRepository;
 import com.neptune.boards.entity.Task;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@ public class TaskServiceTest {
 
     @Test
     @DisplayName("Get Task by ID: should return task if found")
-    void getTaskByIdTest() throws BoardmasterException {
+    void getTaskByIdTest() throws NeptuneBoardsException {
         Task task = new Task();
         task.setName("Test Task");
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
@@ -56,13 +56,13 @@ public class TaskServiceTest {
     void getTaskByIdNotFoundTest() {
         when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.getTask(1L));
+        assertThrows(NeptuneBoardsException.class, () -> service.getTask(1L));
         verify(taskRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Create Task: should create and return a new task for a given dashboard")
-    void createTaskTest() throws BoardmasterException {
+    void createTaskTest() throws NeptuneBoardsException {
         Task task = new Task();
         task.setName("New Task");
         when(taskRepository.save(any(Task.class))).thenReturn(task);
@@ -86,14 +86,14 @@ public class TaskServiceTest {
         task.setName("New Task");
         when(dashboardRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.create(1L, task));
+        assertThrows(NeptuneBoardsException.class, () -> service.create(1L, task));
         verify(taskRepository, times(0)).save(any(Task.class));
         verify(dashboardRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Update Task: should update and return the task")
-    void updateTaskTest() throws BoardmasterException {
+    void updateTaskTest() throws NeptuneBoardsException {
         Task existingTask = new Task();
         existingTask.setId(1L);
         existingTask.setName("Existing Task");
@@ -125,14 +125,14 @@ public class TaskServiceTest {
         updatedTask.setDescription("Updated Description");
         when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.update(1L, updatedTask));
+        assertThrows(NeptuneBoardsException.class, () -> service.update(1L, updatedTask));
         verify(taskRepository, times(1)).findById(1L);
         verify(taskRepository, times(0)).save(any(Task.class));
     }
 
     @Test
     @DisplayName("Delete Task: should delete the task if found")
-    void deleteTaskTest() throws BoardmasterException {
+    void deleteTaskTest() throws NeptuneBoardsException {
         Task task = new Task();
         task.setName("Test Task");
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
@@ -150,7 +150,7 @@ public class TaskServiceTest {
     void deleteTaskNotFoundTest() {
         when(taskRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.delete(1L));
+        assertThrows(NeptuneBoardsException.class, () -> service.delete(1L));
         verify(taskRepository, times(1)).findById(1L);
         verify(taskRepository, times(0)).delete(any(Task.class));
     }

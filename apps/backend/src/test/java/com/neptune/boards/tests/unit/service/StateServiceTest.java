@@ -1,6 +1,6 @@
 package com.neptune.boards.tests.unit.service;
 
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.service.StateService;
 import com.neptune.boards.entity.State;
@@ -32,7 +32,7 @@ public class StateServiceTest {
 
     @Test
     @DisplayName("Get State by ID: should return state if found")
-    void getStateByIdTest() throws BoardmasterException {
+    void getStateByIdTest() throws NeptuneBoardsException {
         State state = new State();
         state.setName("Test State");
         when(repository.findById(1L)).thenReturn(Optional.of(state));
@@ -49,13 +49,13 @@ public class StateServiceTest {
     void getStateByIdNotFoundTest() {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.getState(1L));
+        assertThrows(NeptuneBoardsException.class, () -> service.getState(1L));
         verify(repository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Get State by Name: should return state if found")
-    void getStateByNameTest() throws BoardmasterException {
+    void getStateByNameTest() throws NeptuneBoardsException {
         State state = new State();
         state.setName("Test State");
         when(repository.findByName("Test State")).thenReturn(Optional.of(state));
@@ -72,7 +72,7 @@ public class StateServiceTest {
     void getStateByNameNotFoundTest() {
         when(repository.findByName("Test State")).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.getState("Test State"));
+        assertThrows(NeptuneBoardsException.class, () -> service.getState("Test State"));
         verify(repository, times(1)).findByName("Test State");
     }
 
@@ -92,7 +92,7 @@ public class StateServiceTest {
 
     @Test
     @DisplayName("Delete State by ID: should delete state if found")
-    void deleteStateByIdTest() throws BoardmasterException {
+    void deleteStateByIdTest() throws NeptuneBoardsException {
         State state = new State();
         state.setName("Test State");
         when(repository.findById(1L)).thenReturn(Optional.of(state));
@@ -110,14 +110,14 @@ public class StateServiceTest {
     void deleteStateByIdNotFoundTest() {
         when(repository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(BoardmasterException.class, () -> service.delete(1L));
+        assertThrows(NeptuneBoardsException.class, () -> service.delete(1L));
         verify(repository, times(1)).findById(1L);
         verify(repository, times(0)).delete(any(State.class));
     }
 
     @Test
     @DisplayName("Change State Name: should update the state name")
-    void changeStateNameTest() throws BoardmasterException {
+    void changeStateNameTest() throws NeptuneBoardsException {
         State state = new State();
         state.setName("Old Name");
         when(repository.findByName("Old Name")).thenReturn(Optional.of(state));
@@ -132,7 +132,7 @@ public class StateServiceTest {
 
     @Test
     @DisplayName("Update State Name by ID: should update the state name")
-    void updateStateNameByIdTest() throws BoardmasterException {
+    void updateStateNameByIdTest() throws NeptuneBoardsException {
         State state = new State();
         state.setName("Old Name");
         when(repository.findById(1L)).thenReturn(Optional.of(state));

@@ -2,7 +2,7 @@ package com.neptune.boards.controller;
 
 import com.neptune.boards.dto.BoardUpdateDTO;
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class BoardController {
     }
 
     @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> getBoard(@PathVariable UUID uuid) throws BoardmasterException {
+    public ResponseEntity<Board> getBoard(@PathVariable UUID uuid) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.getBoard(uuid), HttpStatus.OK);
     }
 
@@ -35,13 +35,13 @@ public class BoardController {
     }
 
     @DeleteMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> deleteDashboardById(@PathVariable UUID uuid) throws BoardmasterException {
+    public ResponseEntity<Board> deleteDashboardById(@PathVariable UUID uuid) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.deleteBoard(uuid), HttpStatus.OK);
     }
 
     // Cambiar el nombre de un Dashboard
     @PutMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardUpdateDTO dto) throws BoardmasterException {
+    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardUpdateDTO dto) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.updateBoard(uuid, dto), HttpStatus.OK);
     }
 }

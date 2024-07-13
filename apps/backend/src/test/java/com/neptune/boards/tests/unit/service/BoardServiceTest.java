@@ -1,10 +1,9 @@
 package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.BoardRepository;
 import com.neptune.boards.service.BoardService;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,7 +73,7 @@ public class BoardServiceTest {
 
     @Test
     @DisplayName("Get Dashboard by UUID: should return dashboard if found")
-    void getDashboardByIdTest() throws BoardmasterException {
+    void getDashboardByIdTest() throws NeptuneBoardsException {
         Board board = Board.builder().UUID(UUID.randomUUID()).name("Test Dashboard").build();
         when(repository.findByUUID(board.getUUID())).thenReturn(Optional.of(board));
 
@@ -87,7 +86,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("Exception Board: get board not found")
     void testNotFoundBoard() {
-        BoardmasterException exception = assertThrows(BoardmasterException.class, () -> {
+        NeptuneBoardsException exception = assertThrows(NeptuneBoardsException.class, () -> {
             service.getBoard(UUID.randomUUID());
         });
         assertEquals("Board not found", exception.getMessage());

@@ -2,7 +2,7 @@ package com.neptune.boards.service;
 
 import com.neptune.boards.dto.BoardUpdateDTO;
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.exception.BoardmasterException;
+import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +22,11 @@ public class BoardService implements IBoardService {
     }
 
     @Override
-    public Board getBoard(UUID uuid) throws BoardmasterException {
+    public Board getBoard(UUID uuid) throws NeptuneBoardsException {
         Optional<Board> dashboard = repository.findByUUID(uuid);
 
         if(dashboard.isEmpty()){
-            throw new BoardmasterException("Object not found");
+            throw new NeptuneBoardsException("Object not found");
         }
 
         return dashboard.get();
@@ -38,7 +38,7 @@ public class BoardService implements IBoardService {
     }
 
     @Override
-    public Board deleteBoard(UUID uuid) throws BoardmasterException {
+    public Board deleteBoard(UUID uuid) throws NeptuneBoardsException {
         Board dashboard = this.getBoard(uuid);
         this.repository.delete(dashboard);
         return dashboard;
@@ -46,7 +46,7 @@ public class BoardService implements IBoardService {
 
 
     @Override
-    public Board updateBoard(UUID uuid, BoardUpdateDTO dto) throws BoardmasterException {
+    public Board updateBoard(UUID uuid, BoardUpdateDTO dto) throws NeptuneBoardsException {
         Board foundedBoard = this.getBoard(uuid);
         Board updatedBoard = foundedBoard.updateFromDto(dto);
         return repository.save(updatedBoard);
