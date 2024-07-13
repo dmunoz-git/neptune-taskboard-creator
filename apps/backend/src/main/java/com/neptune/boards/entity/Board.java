@@ -1,5 +1,6 @@
 package com.neptune.boards.entity;
 
+import com.neptune.boards.dto.BoardUpdateDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -19,7 +20,7 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;  // Private id for table
 
-    @NotNull
+    @Column(unique = true, nullable = false)
     private UUID UUID; // Board identifier specified by the client
 
     @Column(unique = true, nullable = false)
@@ -51,5 +52,17 @@ public class Board {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDate.now();
+    }
+
+    // Update method from DTO
+    public Board updateFromDto(BoardUpdateDTO dto) {
+        BoardBuilder builder = Board.builder()
+                .id(this.id)
+                .UUID(this.UUID)
+                .name(dto.getName() != null ? dto.getName() : this.name)
+                .description(dto.getDescription() != null ? dto.getDescription() : this.description)
+                .createdAt(this.createdAt)
+                .updatedAt(LocalDate.now());
+        return builder.build();
     }
 }

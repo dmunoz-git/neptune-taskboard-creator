@@ -1,5 +1,6 @@
 package com.neptune.boards.service;
 
+import com.neptune.boards.dto.BoardUpdateDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.BoardmasterException;
 import com.neptune.boards.repository.BoardRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BoardService implements IBoardService {
@@ -15,13 +17,13 @@ public class BoardService implements IBoardService {
     private BoardRepository repository;
 
     @Override
-    public Board create(Board board) {
+    public Board createBoard(Board board) {
         return this.repository.save(board);
     }
 
     @Override
-    public Board getDashboard(Long id) throws BoardmasterException {
-        Optional<Board> dashboard = repository.findById(id);
+    public Board getBoard(UUID uuid) throws BoardmasterException {
+        Optional<Board> dashboard = repository.findByUUID(uuid);
 
         if(dashboard.isEmpty()){
             throw new BoardmasterException("Object not found");
@@ -31,39 +33,22 @@ public class BoardService implements IBoardService {
     }
 
     @Override
-    public Board getDashboard(String name) throws BoardmasterException{
-        Optional<Board> dashboard = repository.findByName(name);
-
-        if(dashboard.isEmpty()){
-            throw new BoardmasterException("Object not found");
-        }
-
-        return dashboard.get();
-    }
-
-    @Override
-    public List<Board> getAllDashboards() {
+    public List<Board> getAllBoards() {
         return repository.findAll();
     }
 
     @Override
-    public Board deleteDashboard(Long id) throws BoardmasterException {
-        Board dashboard = this.getDashboard(id);
+    public Board deleteBoard(UUID uuid) throws BoardmasterException {
+        Board dashboard = this.getBoard(uuid);
         this.repository.delete(dashboard);
         return dashboard;
     }
 
-    @Override
-    public Board deleteDashboard(String name) throws BoardmasterException {
-        Board dashboard = this.getDashboard(name);
-        this.repository.delete(dashboard);
-        return dashboard;
-    }
 
     @Override
-    public Board changeDashboardName(String name) throws BoardmasterException {
-        Board dashboard = this.getDashboard(name);
-        dashboard.setName(name);
-        return repository.save(dashboard);
+    public Board updateBoard(UUID uuid, BoardUpdateDTO dto) throws BoardmasterException {
+        Board foundedBoard = this.getBoard(uuid);
+        Board updatedBoard = foundedBoard.updateFromDto(dto);
+        return repository.save(updatedBoard);
     }
 }
