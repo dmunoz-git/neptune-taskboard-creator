@@ -20,8 +20,8 @@ public class BoardController {
     private BoardService service;
 
     @PostMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> createBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO requestDTO) {
-        return new ResponseEntity<>(service.createBoard(uuid, requestDTO), HttpStatus.CREATED);
+    public ResponseEntity<Board> createBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO boardRequest) {
+        return new ResponseEntity<>(service.createBoard(uuid, boardRequest), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -30,18 +30,17 @@ public class BoardController {
     }
 
     @GetMapping(path = "/list", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<Board>> getAllDashboards() {
+    public ResponseEntity<List<Board>> getAllBoards() {
         return new ResponseEntity<>(service.getAllBoards(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> deleteDashboardById(@PathVariable UUID uuid) throws NeptuneBoardsException {
+    public ResponseEntity<Board> deleteBoard(@PathVariable UUID uuid) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.deleteBoard(uuid), HttpStatus.OK);
     }
 
-    // Cambiar el nombre de un Dashboard
     @PutMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO dto) throws NeptuneBoardsException {
-        return new ResponseEntity<>(service.updateBoard(uuid, dto), HttpStatus.OK);
+    public ResponseEntity<Board> updateBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO boardRequest) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.updateBoard(uuid, boardRequest), HttpStatus.OK);
     }
 }

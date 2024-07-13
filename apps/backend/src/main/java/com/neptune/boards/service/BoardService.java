@@ -18,11 +18,11 @@ public class BoardService implements IBoardService {
     private BoardRepository repository;
 
     @Override
-    public Board createBoard(UUID uuid, BoardRequestDTO requestDTO) {
+    public Board createBoard(UUID uuid, BoardRequestDTO boardRequest) {
         Board board = Board.builder()
                 .UUID(uuid)
-                .name(requestDTO.getName())
-                .description(requestDTO.getDescription())
+                .name(boardRequest.getName())
+                .description(boardRequest.getDescription())
                 .build();
         return this.repository.save(board);
     }
@@ -52,9 +52,9 @@ public class BoardService implements IBoardService {
 
 
     @Override
-    public Board updateBoard(UUID uuid, BoardRequestDTO dto) throws NeptuneBoardsException {
+    public Board updateBoard(UUID uuid, BoardRequestDTO boardRequest) throws NeptuneBoardsException {
         Board foundedBoard = this.getBoard(uuid);
-        Board updatedBoard = foundedBoard.updateFromDto(dto);
+        Board updatedBoard = foundedBoard.updateFromDto(boardRequest);
         return repository.save(updatedBoard);
     }
 }
