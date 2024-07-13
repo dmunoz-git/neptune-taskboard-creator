@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -61,7 +62,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Get Dashboard by ID: should return not found if dashboard does not exist")
     public void testGetDashboardByIdNotFound() throws Exception {
-        Mockito.when(service.getBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found"));
+        Mockito.when(service.getBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(get("/api/dashboard/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +84,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Get Dashboard by Name: should return not found if dashboard does not exist")
     public void testGetDashboardByNameNotFound() throws Exception {
-        Mockito.when(service.getBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found"));
+        Mockito.when(service.getBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(get("/api/dashboard")
                         .param("name", "Name")
@@ -119,7 +120,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Delete Dashboard by ID: should return not found if dashboard does not exist")
     public void testDeleteDashboardByIdNotFound() throws Exception {
-        Mockito.when(service.deleteBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found"));
+        Mockito.when(service.deleteBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(delete("/api/dashboard/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -129,7 +130,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Delete Dashboard by Name: should return not found if dashboard does not exist")
     public void testDeleteDashboardByNameNotFound() throws Exception {
-        Mockito.when(service.deleteBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found"));
+        Mockito.when(service.deleteBoard(UUID.randomUUID())).thenThrow(new NeptuneBoardsException("Dashboard not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(delete("/api/dashboard")
                         .param("name", "Name")

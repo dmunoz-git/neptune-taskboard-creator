@@ -5,6 +5,7 @@ import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class BoardService implements IBoardService {
         Optional<Board> dashboard = repository.findByUUID(uuid);
 
         if(dashboard.isEmpty()){
-            throw new NeptuneBoardsException("Object not found");
+            throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
         }
 
         return dashboard.get();

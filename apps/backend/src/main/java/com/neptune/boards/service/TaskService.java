@@ -6,6 +6,7 @@ import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class TaskService implements ITaskService {
     public Task getTask(Long id) throws NeptuneBoardsException {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isEmpty()) {
-            throw new NeptuneBoardsException("Task not found");
+            throw new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, this.getClass());
         }
         return task.get();
     }
@@ -33,7 +34,7 @@ public class TaskService implements ITaskService {
     public Task create(Long dashboardId, Task task) throws NeptuneBoardsException {
         Optional<Board> dashboard = dashboardRepository.findById(dashboardId);
         if (dashboard.isEmpty()) {
-            throw new NeptuneBoardsException("Dashboard not found");
+            throw new NeptuneBoardsException("Dashboard not found", HttpStatus.NOT_FOUND, this.getClass());
         }
         task.setBoard(dashboard.get());
         return taskRepository.save(task);

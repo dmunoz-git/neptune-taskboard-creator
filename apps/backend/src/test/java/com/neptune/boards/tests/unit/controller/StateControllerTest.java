@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -48,7 +49,7 @@ class StateControllerTest {
     @Test
     @DisplayName("Get State by ID: should return not found if state does not exist")
     public void testGetStateByIdNotFound() throws Exception {
-        Mockito.when(service.getState(1L)).thenThrow(new NeptuneBoardsException("State not found"));
+        Mockito.when(service.getState(1L)).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(get("/state/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -70,7 +71,7 @@ class StateControllerTest {
     @Test
     @DisplayName("Get State by Name: should return not found if state does not exist")
     public void testGetStateByNameNotFound() throws Exception {
-        Mockito.when(service.getState("Test State")).thenThrow(new NeptuneBoardsException("State not found"));
+        Mockito.when(service.getState("Test State")).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(get("/state")
                         .param("name", "Test State")
@@ -104,7 +105,7 @@ class StateControllerTest {
     @Test
     @DisplayName("Delete State by ID: should return not found if state does not exist")
     public void testDeleteStateByIdNotFound() throws Exception {
-        Mockito.when(service.delete(1L)).thenThrow(new NeptuneBoardsException("State not found"));
+        Mockito.when(service.delete(1L)).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(delete("/state/1")
                         .contentType(MediaType.APPLICATION_JSON))

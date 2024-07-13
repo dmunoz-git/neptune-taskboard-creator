@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -56,7 +57,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("Get Task by ID: should return not found if task does not exist")
     public void testGetTaskByIdNotFound() throws Exception {
-        Mockito.when(taskService.getTask(1L)).thenThrow(new NeptuneBoardsException("Task not found"));
+        Mockito.when(taskService.getTask(1L)).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(get("/task/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -102,7 +103,7 @@ class TaskControllerTest {
     @Test
     @DisplayName("Delete Task by ID: should return not found if task does not exist")
     public void testDeleteTaskByIdNotFound() throws Exception {
-        Mockito.when(taskService.delete(1L)).thenThrow(new NeptuneBoardsException("Task not found"));
+        Mockito.when(taskService.delete(1L)).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(delete("/task/1")
                         .contentType(MediaType.APPLICATION_JSON))

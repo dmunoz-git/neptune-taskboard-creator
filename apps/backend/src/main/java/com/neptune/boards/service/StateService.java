@@ -4,6 +4,7 @@ import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class StateService implements IStateService{
         Optional<State> state = repository.findById(id);
 
         if(state.isEmpty())
-            throw new NeptuneBoardsException("State not found");
+            throw new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass());
 
         return state.get();
     }
@@ -28,7 +29,7 @@ public class StateService implements IStateService{
         Optional<State> state = repository.findByName(name);
 
         if(state.isEmpty())
-            throw new NeptuneBoardsException("State not found");
+            throw new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass());
 
         return state.get();
     }
