@@ -3,12 +3,13 @@ package com.neptune.boards.tests.unit.repository;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.repository.BoardRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.validation.ConstraintViolationException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -95,7 +96,7 @@ public class BoardRepositoryTest {
                 .description("Test board description")
                 .build();
 
-        ConstraintViolationException exception = assertThrows(ConstraintViolationException.class, () -> {
+        DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
             repository.saveAndFlush(duplicateDashboard);
             entityManager.flush();
         });

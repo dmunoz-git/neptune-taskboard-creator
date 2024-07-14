@@ -21,7 +21,7 @@ public class BoardController {
 
     @PostMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Board> createBoard(@PathVariable UUID uuid, @RequestBody BoardRequestDTO boardRequest) {
-        return new ResponseEntity<>(service.createBoard(uuid, boardRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.createBoard(uuid, boardRequest), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
