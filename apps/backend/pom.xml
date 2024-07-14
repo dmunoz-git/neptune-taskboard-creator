@@ -9,7 +9,7 @@
           <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.boardmaster</groupId>
+    <groupId>com.neptune.boards</groupId>
     <artifactId>backend</artifactId>
     <version>1.0-SNAPSHOT</version>
 

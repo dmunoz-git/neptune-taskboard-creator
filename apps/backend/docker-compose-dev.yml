@@ -2,7 +2,7 @@ version: "3.8"
 services:
   mysql:
     image: mysql:5.7
-    container_name: mysql_bm
+    container_name: neptune_boards_db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app
