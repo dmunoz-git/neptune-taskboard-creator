@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.e2e;
 
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
@@ -9,86 +9,74 @@ import static org.hamcrest.Matchers.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BoardE2ETest {
 
     @Test
-    public void testCreateBoardWithTemplate(){
+    @DisplayName("E2E: Create Board")
+    @Order(1)
+    public void testCreateBoard(){
         String requestBody = """
-                        {
-                          "name": "Test board with Template",
-                          "uuid": "2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c",
-                          "description": "This is a test board",
-                          "template": "Scrumban"
-                        }
-                """;
+            {
+              "name": "Test Board",
+              "description": "This is a test board"
+            }
+         """;
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("/api/board")
+                .post("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Test Board"))
-                .body("description", equalTo("This is a testboard"))
-                .body("templateStates.size()", equalTo(4))
-                .body("templateStates", hasItems("Backlog", "To Do", "Doing", "In Progress", "Review", "Done"));
+                .body("description", equalTo("This is a test board"));
     }
 
     @Test
-    public void testCreateBoardWithoutTemplate() {
-        String requestBody = """
-                        {
-                          "name": "Test board without Template",
-                          "uuid": "96a72479-8884-40a1-bdc1-cd85783fc173",
-                          "description": "This is a test board",
-                        }
-                """;
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(requestBody)
-                .when()
-                .post("/api/board")
-                .then()
-                .statusCode(200)
-                .body("name", equalTo("Test Board"))
-                .body("description", equalTo("This is a testboard"))
-                .body("templateStates.size()", equalTo(4))
-                .body("templateStates", hasItems("To Do", "Doing", "In Progress", "Done"));
-    }
-
-    @Test
+    @DisplayName("E2E: Get Board by UUID")
+    @Order(2)
     public void testGetBoardData(){
         given()
                 .contentType(ContentType.JSON)
-                .param("uuid", "96a72479-8884-40a1-bdc1-cd85783fc173")
                 .when()
-                .get("/api/board/{uuid}")
+                .get("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200)
-                .body("name", notNullValue())
-                .body("description", notNullValue())
-                .body("templateStates.size()", equalTo(4))
-                .body("tasks", emptyArray());
+                .body("name", equalTo("Test Board"))
+                .body("description", equalTo("This is a test board"));
     }
 
     @Test
+    @DisplayName("E2E: Update Board")
+    @Order(3)
     public void testUpdateBoardData(){
         String requestBody = """
                         {
-                          "name": "Change board name",
-                          "description": "This is a test board mod",
+                          "name": "Change board name"
                         }
                 """;
 
         given()
                 .contentType(ContentType.JSON)
-                .param("uuid", "96a72479-8884-40a1-bdc1-cd85783fc173")
+                .body(requestBody)
                 .when()
-                .put("/api/board/{uuid}")
+                .put("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Change board name"))
-                .body("description", equalTo("This is a test board mod"));
+                .body("description", equalTo("This is a test board"));
+    }
+
+    @Test
+    @DisplayName("E2E: Delete Board")
+    @Order(4)
+    public void testDeleteBoardData(){
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
+                .then()
+                .statusCode(200);
     }
 }
