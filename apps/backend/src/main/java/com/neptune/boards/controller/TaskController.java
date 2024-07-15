@@ -1,7 +1,7 @@
 package com.neptune.boards.controller;
 
 import com.neptune.boards.dto.TaskRequestDTO;
-import com.neptune.boards.entity.Task;
+import com.neptune.boards.dto.TaskResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +18,30 @@ import java.util.UUID;
 public class TaskController {
 
     @Autowired
-    private TaskService taskService;
+    private TaskService service;
 
     @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Task> getTaskById(@PathVariable UUID uuid) throws NeptuneBoardsException {
-        return new ResponseEntity<>(taskService.getTask(uuid), HttpStatus.OK);
+    public ResponseEntity<TaskResponseDTO> getTaskById(@PathVariable UUID uuid) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.getTask(uuid), HttpStatus.OK);
     }
 
     @PostMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Task> createTask(@PathVariable UUID uuid, @RequestBody TaskRequestDTO taskRequest) throws NeptuneBoardsException {
-        return new ResponseEntity<>(taskService.createTask(uuid, taskRequest), HttpStatus.CREATED);
+    public ResponseEntity<TaskResponseDTO> createTask(@PathVariable UUID uuid, @RequestBody TaskRequestDTO taskRequest) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.createTask(uuid, taskRequest), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Task> updateTask(@PathVariable UUID uuid, @RequestBody TaskRequestDTO taskRequest) throws NeptuneBoardsException {
-        return new ResponseEntity<>(taskService.updateTask(uuid, taskRequest), HttpStatus.OK);
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable UUID uuid, @RequestBody TaskRequestDTO taskRequest) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.updateTask(uuid, taskRequest), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Task> deleteTask(@PathVariable UUID uuid) throws NeptuneBoardsException {
-        return new ResponseEntity<>(taskService.deleteTask(uuid), HttpStatus.OK);
+    public ResponseEntity<TaskResponseDTO> deleteTask(@PathVariable UUID uuid) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.deleteTask(uuid), HttpStatus.OK);
     }
 
     @GetMapping(path="/list", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<List<Task>> listTasks() {
-        return new ResponseEntity<>(taskService.listTasks(), HttpStatus.OK);
+    public ResponseEntity<List<TaskResponseDTO>> listTasks() {
+        return new ResponseEntity<>(service.listTasks(), HttpStatus.OK);
     }
 }

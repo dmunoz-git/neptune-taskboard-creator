@@ -1,9 +1,11 @@
 package com.neptune.boards.service;
 
 import com.neptune.boards.dto.TaskRequestDTO;
+import com.neptune.boards.dto.TaskResponseDTO;
 import com.neptune.boards.entity.Task;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
+import com.neptune.boards.mapper.TaskMapper;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +26,18 @@ public class TaskService implements ITaskService {
     private BoardRepository dashboardRepository;
 
     @Override
-    public Task getTask(UUID uuid) throws NeptuneBoardsException {
+    public TaskResponseDTO getTask(UUID uuid) throws NeptuneBoardsException {
         Optional<Task> task = taskRepository.findByUUID(uuid);
 
         if (task.isEmpty()) {
             throw new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, this.getClass());
         }
 
-        return task.get();
+        return TaskMapper.mapBoardToResponseDTO(task.get());
     }
 
     @Override
-    public Task createTask(UUID uuid, TaskRequestDTO taskRequest) throws NeptuneBoardsException {
+    public TaskResponseDTO createTask(UUID uuid, TaskRequestDTO taskRequest) throws NeptuneBoardsException {
         Optional<Board> board = dashboardRepository.findByUUID(taskRequest.getBoard());
 
         if (board.isEmpty()) {
@@ -48,11 +50,11 @@ public class TaskService implements ITaskService {
                 .board(board.get())
                 .build();
 
-        return taskRepository.save(task);
+        return TaskMapper.mapBoardToResponseDTO(taskRepository.save(task));
     }
 
     @Override
-    public Task updateTask(UUID uuid, TaskRequestDTO taskRequest) throws NeptuneBoardsException {
+    public TaskResponseDTO updateTask(UUID uuid, TaskRequestDTO taskRequest) throws NeptuneBoardsException {
         Optional<Task> task = taskRepository.findByUUID(uuid);
 
         if (task.isEmpty()) {
@@ -60,11 +62,11 @@ public class TaskService implements ITaskService {
         }
 
         Task updatedTask = task.get().updateFromDto(taskRequest);
-        return taskRepository.save(updatedTask);
+        return TaskMapper.mapBoardToResponseDTO(taskRepository.save(updatedTask));
     }
 
     @Override
-    public Task deleteTask(UUID uuid) throws NeptuneBoardsException {
+    public TaskResponseDTO deleteTask(UUID uuid) throws NeptuneBoardsException {
         Optional<Task> task = taskRepository.findByUUID(uuid);
 
         if (task.isEmpty()) {
@@ -72,13 +74,11 @@ public class TaskService implements ITaskService {
         }
 
         taskRepository.delete(task.get());
-        return task.get();
+        return TaskMapper.mapBoardToResponseDTO(task.get());
     }
 
     @Override
-    public List<Task> listTasks() {
-        return taskRepository.findAll();
+    public List<TaskResponseDTO> listTasks() {
+        return taskRepository.findAll().stream().map(TaskMapper::mapBoardToResponseDTO).toList();
     }
-
-
 }
