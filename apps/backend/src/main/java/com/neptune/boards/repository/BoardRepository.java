@@ -8,5 +8,5 @@ import java.util.UUID;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
     public Optional<Board> findByUUID(UUID uuid);
-    public Optional<Board> deleteByUUID(UUID uuid);
+    public void deleteByUUID(UUID uuid);
 }
