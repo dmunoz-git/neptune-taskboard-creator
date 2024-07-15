@@ -1,8 +1,10 @@
 package com.neptune.boards.service;
 
 import com.neptune.boards.dto.BoardRequestDTO;
+import com.neptune.boards.dto.BoardResponseDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
+import com.neptune.boards.mapper.BoardMapper;
 import com.neptune.boards.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,43 +20,66 @@ public class BoardService implements IBoardService {
     private BoardRepository repository;
 
     @Override
-    public Board createBoard(UUID uuid, BoardRequestDTO boardRequest) {
+    public BoardResponseDTO createBoard(UUID uuid, BoardRequestDTO boardRequest) {
+        // Create board object
         Board board = Board.builder()
                 .UUID(uuid)
                 .name(boardRequest.getName())
                 .description(boardRequest.getDescription())
                 .build();
-        return this.repository.save(board);
+
+        // Save and autogenerate the rest of values
+        Board savedBoard = this.repository.save(board);
+
+        // Map database object to board response
+        return BoardMapper.mapBoardToResponseDTO(savedBoard);
     }
 
     @Override
-    public Board getBoard(UUID uuid) throws NeptuneBoardsException {
+    public BoardResponseDTO getBoard(UUID uuid) throws NeptuneBoardsException {
         Optional<Board> dashboard = repository.findByUUID(uuid);
 
         if(dashboard.isEmpty()){
             throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
         }
 
-        return dashboard.get();
+        Board savedBoard = dashboard.get();
+
+        return BoardMapper.mapBoardToResponseDTO(savedBoard);
     }
 
     @Override
-    public List<Board> getAllBoards() {
-        return repository.findAll();
+    public List<BoardResponseDTO> getAllBoards() {
+        return repository.findAll().stream().map(BoardMapper::mapBoardToResponseDTO).toList();
     }
 
     @Override
-    public Board deleteBoard(UUID uuid) throws NeptuneBoardsException {
-        Board dashboard = this.getBoard(uuid);
-        this.repository.delete(dashboard);
-        return dashboard;
+    public BoardResponseDTO deleteBoard(UUID uuid) throws NeptuneBoardsException {
+        Optional<Board> board = repository.findByUUID(uuid);
+
+        if(board.isEmpty()){
+            throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
+        }
+
+        this.repository.delete(board.get());
+
+        return BoardMapper.mapBoardToResponseDTO(board.get());
     }
 
 
     @Override
-    public Board updateBoard(UUID uuid, BoardRequestDTO boardRequest) throws NeptuneBoardsException {
-        Board foundedBoard = this.getBoard(uuid);
-        Board updatedBoard = foundedBoard.updateFromDto(boardRequest);
-        return repository.save(updatedBoard);
+    public BoardResponseDTO updateBoard(UUID uuid, BoardRequestDTO boardRequest) throws NeptuneBoardsException {
+        Optional<Board> foundBoard = repository.findByUUID(uuid);
+
+        if(foundBoard.isEmpty()){
+            throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
+        }
+
+        Board updatedBoard = foundBoard.get().updateFromDto(boardRequest);
+
+        // Save updated board
+        Board savedBoard = repository.save(updatedBoard);
+
+        return BoardMapper.mapBoardToResponseDTO(savedBoard);
     }
 }
