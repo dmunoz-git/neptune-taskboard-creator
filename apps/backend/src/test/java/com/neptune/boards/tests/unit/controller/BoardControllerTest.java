@@ -3,6 +3,7 @@ package com.neptune.boards.tests.unit.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neptune.boards.controller.BoardController;
 import com.neptune.boards.dto.BoardRequestDTO;
+import com.neptune.boards.dto.BoardResponseDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.BoardService;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +43,7 @@ class BoardControllerTest {
     private Board boardTest;
     private final UUID uuid = UUID.randomUUID();
     private BoardRequestDTO requestBoardTest;
+    private BoardResponseDTO responseDTOTest;
 
     @BeforeEach
     void setUp() {
@@ -52,9 +55,17 @@ class BoardControllerTest {
                 .createdAt(LocalDate.now())
                 .updatedAt(LocalDate.now())
                 .build();
+
         this.requestBoardTest = BoardRequestDTO.builder()
                 .name(this.boardTest.getName())
                 .description(this.boardTest.getDescription())
+                .build();
+
+        this.responseDTOTest = BoardResponseDTO.builder()
+                .name(this.boardTest.getName())
+                .description(this.boardTest.getDescription())
+                .createdAt(this.boardTest.getCreatedAt())
+                .updatedAt(this.boardTest.getUpdatedAt())
                 .build();
     }
 
@@ -63,7 +74,7 @@ class BoardControllerTest {
     public void createBoardControllerTest() throws Exception {
         String boardRequestJson = objectMapper.writeValueAsString(requestBoardTest);
 
-        Mockito.when(service.createBoard(uuid, requestBoardTest)).thenReturn(this.boardTest);
+        Mockito.when(service.createBoard(uuid, requestBoardTest)).thenReturn(this.responseDTOTest);
 
         mockMvc.perform(post("/api/board/" + this.uuid)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +96,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Get Board by UUID: should return board")
     public void getBoardControllerTest() throws Exception {
-        Mockito.when(service.getBoard(uuid)).thenReturn(this.boardTest);
+        Mockito.when(service.getBoard(uuid)).thenReturn(this.responseDTOTest);
 
         mockMvc.perform(get("/api/board/" + boardTest.getUUID())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -95,8 +106,8 @@ class BoardControllerTest {
     @Test
     @DisplayName("Get All Boards: should return list of dashboards")
     public void testGetAllDashboards() throws Exception {
-        List<Board> dashboards = Arrays.asList(Board.builder().UUID(UUID.randomUUID()).name("Board1").build(), Board.builder().UUID(UUID.randomUUID()).name("Board2").build());
-        Mockito.when(service.getAllBoards()).thenReturn(dashboards);
+        List<BoardResponseDTO> boards = Arrays.asList(BoardResponseDTO.builder().UUID(UUID.randomUUID()).name("Board1").build(), BoardResponseDTO.builder().UUID(UUID.randomUUID()).name("Board2").build());
+        Mockito.when(service.getAllBoards()).thenReturn(boards);
 
         mockMvc.perform(get("/api/board/list")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -109,7 +120,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("Delete Boards by ID: should delete dashboard if found")
     public void testDeleteDashboardById() throws Exception {
-        Mockito.when(service.deleteBoard(uuid)).thenReturn(this.boardTest);
+        Mockito.when(service.deleteBoard(uuid)).thenReturn(this.responseDTOTest);
 
         mockMvc.perform(delete("/api/board/" + this.boardTest.getUUID())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -132,7 +143,7 @@ class BoardControllerTest {
     @Disabled
     public void testUpdateBoard() throws Exception {
         UUID uuid = boardTest.getUUID();
-        Board updatedBoard = Board.builder()
+        BoardResponseDTO updatedBoard = BoardResponseDTO.builder()
                 .UUID(uuid)
                 .name("Updated Board")
                 .description(boardTest.getDescription())

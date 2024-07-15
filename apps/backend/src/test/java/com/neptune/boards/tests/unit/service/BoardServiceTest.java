@@ -1,6 +1,7 @@
 package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.dto.BoardRequestDTO;
+import com.neptune.boards.dto.BoardResponseDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.BoardRepository;
@@ -58,7 +59,7 @@ public class BoardServiceTest {
 
         // Configure to mock repository and create the board
         when(repository.save(any(Board.class))).thenReturn(board);
-        Board savedBoard = service.createBoard(uuid, requestDTO);
+        BoardResponseDTO savedBoard = service.createBoard(uuid, requestDTO);
 
         // Test if the board exists
         assertNotNull(savedBoard);
@@ -73,10 +74,6 @@ public class BoardServiceTest {
         assertEquals(currentDate, savedBoard.getCreatedAt());
         assertEquals(currentDate, savedBoard.getUpdatedAt());
 
-        // Check if the db sets a correct id
-        assertNotNull(savedBoard.getId());
-        assertInstanceOf(Long.class, savedBoard.getId());
-
         // Check invocations of repository
         verify(repository, times(1)).save(any(Board.class));
     }
@@ -87,7 +84,7 @@ public class BoardServiceTest {
         Board board = Board.builder().UUID(UUID.randomUUID()).name("Test Dashboard").build();
         when(repository.findByUUID(board.getUUID())).thenReturn(Optional.of(board));
 
-        Board foundBoard = service.getBoard(board.getUUID());
+        BoardResponseDTO foundBoard = service.getBoard(board.getUUID());
 
         assertNotNull(foundBoard);
         assertEquals("Test Dashboard", foundBoard.getName());
@@ -114,7 +111,7 @@ public class BoardServiceTest {
         when(repository.findAll()).thenReturn(Arrays.asList(board1, board2));
 
         // Get boards
-        List<Board> boards = service.getAllBoards();
+        List<BoardResponseDTO> boards = service.getAllBoards();
         assertNotNull(boards);
         assertEquals(2, boards.size());
         verify(repository, times(1)).findAll();
@@ -133,7 +130,7 @@ public class BoardServiceTest {
         Mockito.when(repository.save(any(Board.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Call the service method
-        Board updatedBoard = service.updateBoard(boardUUID, boardRequest);
+        BoardResponseDTO updatedBoard = service.updateBoard(boardUUID, boardRequest);
 
         // Verify the results
         assertEquals(boardRequest.getName(), updatedBoard.getName());

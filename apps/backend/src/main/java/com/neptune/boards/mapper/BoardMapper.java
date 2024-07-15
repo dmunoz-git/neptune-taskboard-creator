@@ -4,6 +4,8 @@ import com.neptune.boards.dto.BoardResponseDTO;
 import com.neptune.boards.entity.Board;
 import com.neptune.boards.entity.Task;
 
+import java.util.Collections;
+
 public class BoardMapper {
     public static BoardResponseDTO mapBoardToResponseDTO(Board board){
         return BoardResponseDTO.builder()
@@ -12,7 +14,7 @@ public class BoardMapper {
                 .description(board.getDescription())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
-                .tasks(board.getTasks().stream().map(Task::getUUID).toList())
+                .tasks(board.getTasks() != null ? board.getTasks().stream().map(Task::getUUID).toList() : Collections.emptyList())
                 .build();
     }
 }
