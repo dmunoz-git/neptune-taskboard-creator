@@ -30,34 +30,33 @@ public class TaskRepositoryTest {
     StateRepository stateRepository;
 
     private Task task;
-    private Board dashboard;
+    private Board board;
     private State state;
 
     @BeforeEach
     public void setUp() {
-        dashboard =  Board.builder().name("Test Dashboard").build();
-        dashboardRepository.save(dashboard);
+        board =  Board.builder().name("Test Dashboard").build();
+        dashboardRepository.save(board);
 
-        state = new State();
-        state.setName("Test State");
+        state = State.builder().name("Test State").build();
         stateRepository.save(state);
 
-        task = new Task();
-        task.setName("Test Task");
-        task.setDescription("Test Description");
-        task.setBoard(dashboard);
-        task.setState(state);
+        task = Task.builder()
+                .name("Test Task")
+                .description("Test Description")
+                .board(board)
+                .state(state).build();
         repository.save(task);
     }
 
     @Test
     @DisplayName("Task Repository Unit Test: should save task in db")
     public void saveTaskTest() {
-        Task newTask = new Task();
-        newTask.setName("New Test Task");
-        newTask.setDescription("New Test Description");
-        newTask.setBoard(dashboard);
-        newTask.setState(state);
+        Task newTask = Task.builder()
+                .name("New Test Task")
+                .description("New Test Description")
+                .board(board)
+                .state(state).build();
 
         Task savedTask = repository.save(newTask);
 

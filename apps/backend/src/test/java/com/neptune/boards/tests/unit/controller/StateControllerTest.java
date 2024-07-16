@@ -31,8 +31,7 @@ class StateControllerTest {
 
     @BeforeEach
     void setUp() {
-        this.state = new State();
-        this.state.setName("Test State");
+        this.state = State.builder().name("Test State").build();
     }
 
     @Test

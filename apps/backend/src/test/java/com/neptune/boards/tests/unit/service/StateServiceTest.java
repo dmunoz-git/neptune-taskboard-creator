@@ -33,8 +33,7 @@ public class StateServiceTest {
     @Test
     @DisplayName("Get State by ID: should return state if found")
     void getStateByIdTest() throws NeptuneBoardsException {
-        State state = new State();
-        state.setName("Test State");
+        State state = State.builder().name("Test State").build();
         when(repository.findById(1L)).thenReturn(Optional.of(state));
 
         State foundState = service.getState(1L);
@@ -56,8 +55,7 @@ public class StateServiceTest {
     @Test
     @DisplayName("Get State by Name: should return state if found")
     void getStateByNameTest() throws NeptuneBoardsException {
-        State state = new State();
-        state.setName("Test State");
+        State state = State.builder().name("Test State").build();
         when(repository.findByName("Test State")).thenReturn(Optional.of(state));
 
         State foundState = service.getState("Test State");
@@ -79,8 +77,7 @@ public class StateServiceTest {
     @Test
     @DisplayName("Create State: should create and return a new state")
     void createStateTest() {
-        State state = new State();
-        state.setName("New State");
+        State state = State.builder().name("New State").build();
         when(repository.save(any(State.class))).thenReturn(state);
 
         State createdState = service.create(state);
@@ -93,8 +90,7 @@ public class StateServiceTest {
     @Test
     @DisplayName("Delete State by ID: should delete state if found")
     void deleteStateByIdTest() throws NeptuneBoardsException {
-        State state = new State();
-        state.setName("Test State");
+        State state = State.builder().name("Test State").build();
         when(repository.findById(1L)).thenReturn(Optional.of(state));
 
         State deletedState = service.delete(1L);
@@ -118,8 +114,7 @@ public class StateServiceTest {
     @Test
     @DisplayName("Change State Name: should update the state name")
     void changeStateNameTest() throws NeptuneBoardsException {
-        State state = new State();
-        state.setName("Old Name");
+        State state = State.builder().name("Test State").build();
         when(repository.findByName("Old Name")).thenReturn(Optional.of(state));
         when(repository.save(any(State.class))).thenReturn(state);
 
@@ -133,8 +128,7 @@ public class StateServiceTest {
     @Test
     @DisplayName("Update State Name by ID: should update the state name")
     void updateStateNameByIdTest() throws NeptuneBoardsException {
-        State state = new State();
-        state.setName("Old Name");
+        State state = State.builder().name("Test State").build();
         when(repository.findById(1L)).thenReturn(Optional.of(state));
         when(repository.save(any(State.class))).thenReturn(state);
 
