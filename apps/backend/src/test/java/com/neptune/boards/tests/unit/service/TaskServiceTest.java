@@ -1,9 +1,13 @@
 package com.neptune.boards.tests.unit.service;
 
+import com.neptune.boards.dto.TaskRequestDTO;
+import com.neptune.boards.dto.TaskResponseDTO;
 import com.neptune.boards.entity.Board;
-import com.neptune.boards.repository.BoardRepository;
+import com.neptune.boards.entity.State;
 import com.neptune.boards.entity.Task;
 import com.neptune.boards.exception.NeptuneBoardsException;
+import com.neptune.boards.mapper.TaskMapper;
+import com.neptune.boards.repository.BoardRepository;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +32,7 @@ public class TaskServiceTest {
     TaskRepository taskRepository;
 
     @Mock
-    BoardRepository dashboardRepository;
+    BoardRepository boardRepository;
 
     @InjectMocks
     private TaskService service;
@@ -38,135 +43,146 @@ public class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Get Task by ID: should return task if found")
-    void getTaskByIdTest() throws NeptuneBoardsException {
-        Task task = new Task();
-        task.setName("Test Task");
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+    @DisplayName("Get Task by UUID: should return task if found")
+    void getTaskByUUIDTest() throws NeptuneBoardsException {
+        UUID taskUUID = UUID.randomUUID();
+        Task task = Task.builder().name("Test Task").UUID(taskUUID).build();
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(task));
 
-        Task foundTask = service.getTask(1L);
+        TaskResponseDTO foundTask = service.getTask(taskUUID);
 
         assertNotNull(foundTask);
         assertEquals("Test Task", foundTask.getName());
-        verify(taskRepository, times(1)).findById(1L);
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
     }
 
     @Test
-    @DisplayName("Get Task by ID: should throw exception if not found")
-    void getTaskByIdNotFoundTest() {
-        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("Get Task by UUID: should throw exception if not found")
+    void getTaskByUUIDNotFoundTest() {
+        UUID taskUUID = UUID.randomUUID();
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.getTask(1L));
-        verify(taskRepository, times(1)).findById(1L);
+        assertThrows(NeptuneBoardsException.class, () -> service.getTask(taskUUID));
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
     }
 
     @Test
-    @DisplayName("Create Task: should create and return a new task for a given dashboard")
+    @DisplayName("Create Task: should create and return a new task for a given board")
     void createTaskTest() throws NeptuneBoardsException {
-        Task task = new Task();
-        task.setName("New Task");
+        UUID boardUUID = UUID.randomUUID();
+        Task task = Task.builder().name("New Task").build();
+        Board board = Board.builder().name("Test Board").UUID(boardUUID).build();
+
+        TaskRequestDTO requestDTO = TaskRequestDTO.builder()
+                .name("New Task")
+                .description("New Description")
+                .board(boardUUID)
+                .build();
+
+        when(boardRepository.findByUUID(boardUUID)).thenReturn(Optional.of(board));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        Board dashboard = Board.builder().name("Test Dashboard").build();
-        dashboard.setId(1L);
-        when(dashboardRepository.findById(1L)).thenReturn(Optional.of(dashboard));
-
-        Task createdTask = service.create(1L, task);
+        TaskResponseDTO createdTask = service.createTask(boardUUID, requestDTO);
 
         assertNotNull(createdTask);
         assertEquals("New Task", createdTask.getName());
+        verify(boardRepository, times(1)).findByUUID(boardUUID);
         verify(taskRepository, times(1)).save(any(Task.class));
-        verify(dashboardRepository, times(1)).findById(1L);
     }
 
     @Test
-    @DisplayName("Create Task: should throw exception if dashboard not found")
-    void createTaskDashboardNotFoundTest() {
-        Task task = new Task();
-        task.setName("New Task");
-        when(dashboardRepository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("Create Task: should throw exception if board not found")
+    void createTaskBoardNotFoundTest() {
+        UUID boardUUID = UUID.randomUUID();
+        TaskRequestDTO requestDTO = TaskRequestDTO.builder()
+                .name("New Task")
+                .description("New Description")
+                .board(boardUUID)
+                .build();
 
-        assertThrows(NeptuneBoardsException.class, () -> service.create(1L, task));
+        when(boardRepository.findByUUID(boardUUID)).thenReturn(Optional.empty());
+
+        assertThrows(NeptuneBoardsException.class, () -> service.createTask(boardUUID, requestDTO));
         verify(taskRepository, times(0)).save(any(Task.class));
-        verify(dashboardRepository, times(1)).findById(1L);
+        verify(boardRepository, times(1)).findByUUID(boardUUID);
     }
 
     @Test
     @DisplayName("Update Task: should update and return the task")
     void updateTaskTest() throws NeptuneBoardsException {
-        Task existingTask = new Task();
-        existingTask.setId(1L);
-        existingTask.setName("Existing Task");
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(existingTask));
+        UUID taskUUID = UUID.randomUUID();
+        Task existingTask = Task.builder().UUID(taskUUID).name("Existing Task").build();
 
-        Task updatedTask = new Task();
-        updatedTask.setName("Updated Task");
-        updatedTask.setDescription("Updated Description");
+        TaskRequestDTO updateRequest = TaskRequestDTO.builder()
+                .name("Updated Task")
+                .description("Updated Description")
+                .build();
 
-        Task savedTask = new Task();
-        savedTask.setName("Updated Task");
-        savedTask.setDescription("Updated Description");
-        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(existingTask));
+        when(taskRepository.save(any(Task.class))).thenReturn(existingTask);
 
-        Task result = service.update(1L, updatedTask);
+        TaskResponseDTO updatedTask = service.updateTask(taskUUID, updateRequest);
 
-        assertNotNull(result);
-        assertEquals("Updated Task", result.getName());
-        assertEquals("Updated Description", result.getDescription());
-        verify(taskRepository, times(1)).findById(1L);
-        verify(taskRepository, times(1)).save(existingTask);
+        assertNotNull(updatedTask);
+        assertEquals("Updated Task", updatedTask.getName());
+        assertEquals("Updated Description", updatedTask.getDescription());
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
+        verify(taskRepository, times(1)).save(any(Task.class));
     }
 
     @Test
     @DisplayName("Update Task: should throw exception if task not found")
     void updateTaskNotFoundTest() {
-        Task updatedTask = new Task();
-        updatedTask.setName("Updated Task");
-        updatedTask.setDescription("Updated Description");
-        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+        UUID taskUUID = UUID.randomUUID();
+        TaskRequestDTO updateRequest = TaskRequestDTO.builder()
+                .name("Updated Task")
+                .description("Updated Description")
+                .build();
 
-        assertThrows(NeptuneBoardsException.class, () -> service.update(1L, updatedTask));
-        verify(taskRepository, times(1)).findById(1L);
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.empty());
+
+        assertThrows(NeptuneBoardsException.class, () -> service.updateTask(taskUUID, updateRequest));
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
         verify(taskRepository, times(0)).save(any(Task.class));
     }
 
     @Test
     @DisplayName("Delete Task: should delete the task if found")
     void deleteTaskTest() throws NeptuneBoardsException {
-        Task task = new Task();
-        task.setName("Test Task");
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        UUID taskUUID = UUID.randomUUID();
+        Task task = Task.builder().UUID(taskUUID).name("Test Task").build();
 
-        Task deletedTask = service.delete(1L);
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(task));
+
+        TaskResponseDTO deletedTask = service.deleteTask(taskUUID);
 
         assertNotNull(deletedTask);
         assertEquals("Test Task", deletedTask.getName());
-        verify(taskRepository, times(1)).findById(1L);
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
         verify(taskRepository, times(1)).delete(task);
     }
 
     @Test
     @DisplayName("Delete Task: should throw exception if task not found")
     void deleteTaskNotFoundTest() {
-        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+        UUID taskUUID = UUID.randomUUID();
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.delete(1L));
-        verify(taskRepository, times(1)).findById(1L);
+        assertThrows(NeptuneBoardsException.class, () -> service.deleteTask(taskUUID));
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
         verify(taskRepository, times(0)).delete(any(Task.class));
     }
 
     @Test
     @DisplayName("List Tasks: should return all tasks")
     void listTasksTest() {
-        Task task1 = new Task();
-        task1.setName("Task 1");
-
-        Task task2 = new Task();
-        task2.setName("Task 2");
+        State state = State.builder().name("To-do").UUID(UUID.randomUUID()).build();
+        Task task1 = Task.builder().name("Task 1").state(state).build();
+        Task task2 = Task.builder().name("Task 2").state(state).build();
 
         when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
 
-        List<Task> tasks = service.listTasks();
+        List<TaskResponseDTO> tasks = service.listTasks();
 
         assertNotNull(tasks);
         assertEquals(2, tasks.size());

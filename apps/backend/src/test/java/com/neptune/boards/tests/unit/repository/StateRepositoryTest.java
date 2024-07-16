@@ -30,7 +30,7 @@ public class StateRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        State state = new State();
+        State state = State.builder().name("Test State").build();
         state.setName("Test State");
         this.savedState = repository.save(state);
     }
@@ -45,7 +45,7 @@ public class StateRepositoryTest {
     @Test
     @DisplayName("Exception: should not be able to create a state with the same name")
     public void saveDuplicateStateNameTest() {
-        State duplicateState = new State();
+        State duplicateState = State.builder().name("Test State").build();
         duplicateState.setName("Test State");
 
         PersistenceException exception = Assertions.assertThrows(PersistenceException.class, () -> {
@@ -77,7 +77,7 @@ public class StateRepositoryTest {
     @Test
     @DisplayName("Update: should update the name of a state")
     public void updateStateTest() {
-        State state = new State();
+        State state = State.builder().name("Test State").build();
         state.setName("Test State");
 
         State savedState = repository.save(state);
