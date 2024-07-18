@@ -1,13 +1,19 @@
 package com.neptune.boards.service;
 
+import com.neptune.boards.dto.StateRequestDTO;
+import com.neptune.boards.dto.StateResponseDTO;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.NeptuneBoardsException;
+import com.neptune.boards.mapper.StateMapper;
+import com.neptune.boards.mapper.TaskMapper;
 import com.neptune.boards.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class StateService implements IStateService{
@@ -15,51 +21,53 @@ public class StateService implements IStateService{
     StateRepository repository;
 
     @Override
-    public State getState(Long id) throws NeptuneBoardsException {
-        Optional<State> state = repository.findById(id);
+    public StateResponseDTO getState(UUID uuid) throws NeptuneBoardsException {
+        Optional<State> state = repository.findByUUID(uuid);
 
         if(state.isEmpty())
             throw new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass());
 
-        return state.get();
+        return StateMapper.mapStateToResponseDTO(state.get());
     }
 
     @Override
-    public State getState(String name) throws NeptuneBoardsException {
-        Optional<State> state = repository.findByName(name);
+    public StateResponseDTO createState(UUID uuid, StateRequestDTO stateRequest) {
+        State state = State.builder()
+                .UUID(uuid)
+                .name(stateRequest.getName())
+                .dod(stateRequest.getDod())
+                .build();
+
+        return StateMapper.mapStateToResponseDTO(repository.save(state));
+    }
+
+    @Override
+    public StateResponseDTO deleteState(UUID uuid) throws NeptuneBoardsException {
+        Optional<State> state = repository.findByUUID(uuid);
 
         if(state.isEmpty())
             throw new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass());
 
-        return state.get();
+        return StateMapper.mapStateToResponseDTO(state.get());
     }
 
     @Override
-    public State create(State state) {
-        return repository.save(state);
+    public StateResponseDTO updateState(UUID uuid, StateRequestDTO stateRequest) throws NeptuneBoardsException {
+        Optional<State> state = repository.findByUUID(uuid);
+
+        if(state.isEmpty())
+            throw new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass());
+
+        State updatedState = state.get().updateFromDto(stateRequest);
+        this.repository.save(updatedState);
+
+        return StateMapper.mapStateToResponseDTO(updatedState);
     }
 
     @Override
-    public State delete(Long id) throws NeptuneBoardsException {
-        State state = this.getState(id);
-
-        this.repository.delete(state);
-
-        return state;
-    }
-
-    @Override
-    public void changeName(String name) throws NeptuneBoardsException {
-        State state = this.getState(name);
-        state.setName(name);
-        this.repository.save(state);
-    }
-
-    @Override
-    public void updateName(Long id, String name) throws NeptuneBoardsException {
-        State state = this.getState(id);
-        state.setName(name);
-        this.repository.save(state);
+    public List<StateResponseDTO> listStates() {
+        List<State> states = repository.findAll();
+        return states.stream().map(StateMapper::mapStateToResponseDTO).toList();
     }
 
 }

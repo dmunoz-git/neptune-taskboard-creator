@@ -1,5 +1,7 @@
 package com.neptune.boards.controller;
 
+import com.neptune.boards.dto.StateRequestDTO;
+import com.neptune.boards.dto.StateResponseDTO;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.StateService;
@@ -9,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/state")
 public class StateController {
@@ -16,35 +21,28 @@ public class StateController {
     @Autowired
     private StateService service;
 
-    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<State> getStateById(@PathVariable Long id) throws NeptuneBoardsException {
-        return new ResponseEntity<>(service.getState(id), HttpStatus.OK);
+    @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StateResponseDTO> getStateByUUID(@PathVariable UUID uuid) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.getState(uuid), HttpStatus.OK);
     }
 
-    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<State> getStateByName(@RequestParam String name) throws NeptuneBoardsException {
-        return new ResponseEntity<>(service.getState(name), HttpStatus.OK);
+    @PostMapping(path="/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StateResponseDTO> createState(@PathVariable UUID uuid, @RequestBody StateRequestDTO stateRequest) {
+        return new ResponseEntity<>(service.createState(uuid, stateRequest), HttpStatus.CREATED);
     }
 
-    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<State> createState(@RequestBody State state) {
-        return new ResponseEntity<>(service.create(state), HttpStatus.CREATED);
+    @DeleteMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StateResponseDTO> deleteState(@PathVariable UUID uuid) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.deleteState(uuid), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<State> deleteStateById(@PathVariable Long id) throws NeptuneBoardsException {
-        return new ResponseEntity<>(service.delete(id), HttpStatus.OK);
+    @PutMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<StateResponseDTO> updateState(@PathVariable UUID uuid, @RequestBody StateRequestDTO stateRequest) throws NeptuneBoardsException {
+            return new ResponseEntity<>(service.updateState(uuid, stateRequest), HttpStatus.OK);
     }
 
-    @PutMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> changeStateName(@RequestParam String currentName, @RequestParam String newName) throws NeptuneBoardsException {
-            service.changeName(newName);
-            return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PutMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Void> updateStateName(@PathVariable Long id, @RequestParam String name) throws NeptuneBoardsException {
-        service.updateName(id, name);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(path = "/list", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<StateResponseDTO>> listStates(@PathVariable UUID uuid) throws NeptuneBoardsException {
+        return new ResponseEntity<>(service.listStates(), HttpStatus.OK);
     }
 }
