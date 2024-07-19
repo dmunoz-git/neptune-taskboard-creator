@@ -39,7 +39,7 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("Create Dashboard: should create and return a new board")
+    @DisplayName("Create board: should create and return a new board")
     void createBoardTest() {
         BoardRequestDTO requestDTO = BoardRequestDTO.builder()
                 .name("Test board")
@@ -79,15 +79,15 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("Get Dashboard by UUID: should return board")
+    @DisplayName("Get board by UUID: should return board")
     void getBoardByUUIDTest() throws NeptuneBoardsException {
-        Board board = Board.builder().UUID(UUID.randomUUID()).name("Test Dashboard").build();
+        Board board = Board.builder().UUID(UUID.randomUUID()).name("Test board").build();
         when(repository.findByUUID(board.getUUID())).thenReturn(Optional.of(board));
 
         BoardResponseDTO foundBoard = service.getBoard(board.getUUID());
 
         assertNotNull(foundBoard);
-        assertEquals("Test Dashboard", foundBoard.getName());
+        assertEquals("Test board", foundBoard.getName());
     }
 
     @Test
@@ -101,11 +101,11 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("Get All Dashboards: should return list of dashboards")
+    @DisplayName("Get All boards: should return list of boards")
     void getAllBoardsTest() {
         // Create boards
-        Board board1 = Board.builder().name("Dashboard 1").build();
-        Board board2 = Board.builder().name("Dashboard 2").build();
+        Board board1 = Board.builder().name("board 1").build();
+        Board board2 = Board.builder().name("board 2").build();
 
         // Mock repo
         when(repository.findAll()).thenReturn(Arrays.asList(board1, board2));

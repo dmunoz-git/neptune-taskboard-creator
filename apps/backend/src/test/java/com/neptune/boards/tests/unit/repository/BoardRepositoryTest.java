@@ -77,27 +77,27 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("Find Board: should find dashboard by UUID")
-    public void findDashboardByIdTest() {
+    @DisplayName("Find Board: should find board by UUID")
+    public void findboardByIdTest() {
         // Save the board and check if exist
         repository.save(this.board);
 
-        Optional<Board> foundDashboard = repository.findByUUID(this.board.getUUID());
+        Optional<Board> foundboard = repository.findByUUID(this.board.getUUID());
 
-        assertTrue(foundDashboard.isPresent());
-        Assertions.assertEquals(this.board.getUUID(), foundDashboard.get().getUUID());
+        assertTrue(foundboard.isPresent());
+        Assertions.assertEquals(this.board.getUUID(), foundboard.get().getUUID());
     }
 
     @Test
-    @DisplayName("Exception: should not be able to create a dashboard with the same name")
-    public void saveDuplicateDashboardNameTest() {
-        Board duplicateDashboard = Board.builder()
+    @DisplayName("Exception: should not be able to create a board with the same name")
+    public void saveDuplicateboardNameTest() {
+        Board duplicateboard = Board.builder()
                 .name("Test board")
                 .description("Test board description")
                 .build();
 
         DataIntegrityViolationException exception = assertThrows(DataIntegrityViolationException.class, () -> {
-            repository.saveAndFlush(duplicateDashboard);
+            repository.saveAndFlush(duplicateboard);
             entityManager.flush();
         });
 
@@ -105,8 +105,8 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("Update: should update dashboard and update the date")
-    public void updateDashboardTest() {
+    @DisplayName("Update: should update board and update the date")
+    public void updateboardTest() {
         // Update fields name and description
         this.board.setName("Updated Board name");
         this.board.setDescription("Update Description");
@@ -123,12 +123,12 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("Delete: should delete dashboard by uuid")
-    public void deleteDashboardByIdTest() {
+    @DisplayName("Delete: should delete board by uuid")
+    public void deleteboardByIdTest() {
         repository.deleteByUUID(board.getUUID());
 
-        Optional<Board> foundDashboard = repository.findByUUID(board.getUUID());
+        Optional<Board> foundboard = repository.findByUUID(board.getUUID());
 
-        assertFalse(foundDashboard.isPresent());
+        assertFalse(foundboard.isPresent());
     }
 }

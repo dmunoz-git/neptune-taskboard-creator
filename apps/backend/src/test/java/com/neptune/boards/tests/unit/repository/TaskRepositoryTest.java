@@ -24,7 +24,7 @@ public class TaskRepositoryTest {
     TaskRepository repository;
 
     @Autowired
-    BoardRepository dashboardRepository;
+    BoardRepository boardRepository;
 
     @Autowired
     StateRepository stateRepository;
@@ -35,8 +35,8 @@ public class TaskRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        board =  Board.builder().name("Test Dashboard").build();
-        dashboardRepository.save(board);
+        board =  Board.builder().name("Test board").build();
+        boardRepository.save(board);
 
         state = State.builder().name("Test State").build();
         stateRepository.save(state);

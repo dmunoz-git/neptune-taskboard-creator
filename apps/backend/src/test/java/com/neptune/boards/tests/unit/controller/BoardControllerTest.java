@@ -83,10 +83,10 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("Exception Board not found: should return not found if dashboard does not exist")
+    @DisplayName("Exception Board not found: should return not found if board does not exist")
     public void notFoundGetBoardControllerTest() throws Exception {
         UUID uuid = UUID.randomUUID();
-        Mockito.when(service.getBoard(uuid)).thenThrow(new NeptuneBoardsException("Dashboard not found", HttpStatus.NOT_FOUND, this.getClass()));
+        Mockito.when(service.getBoard(uuid)).thenThrow(new NeptuneBoardsException("board not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(get("/api/board/" + uuid)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -104,8 +104,8 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("Get All Boards: should return list of dashboards")
-    public void testGetAllDashboards() throws Exception {
+    @DisplayName("Get All Boards: should return list of boards")
+    public void testGetAllboards() throws Exception {
         List<BoardResponseDTO> boards = Arrays.asList(BoardResponseDTO.builder().UUID(UUID.randomUUID()).name("Board1").build(), BoardResponseDTO.builder().UUID(UUID.randomUUID()).name("Board2").build());
         Mockito.when(service.getAllBoards()).thenReturn(boards);
 
@@ -118,8 +118,8 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("Delete Boards by ID: should delete dashboard if found")
-    public void testDeleteDashboardById() throws Exception {
+    @DisplayName("Delete Boards by ID: should delete board if found")
+    public void testDeleteboardById() throws Exception {
         Mockito.when(service.deleteBoard(uuid)).thenReturn(this.responseDTOTest);
 
         mockMvc.perform(delete("/api/board/" + this.boardTest.getUUID())
@@ -129,8 +129,8 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("Delete Boards by UUID: should return not found if dashboard does not exist")
-    public void testDeleteDashboardByIdNotFound() throws Exception {
+    @DisplayName("Delete Boards by UUID: should return not found if board does not exist")
+    public void testDeleteboardByIdNotFound() throws Exception {
         Mockito.when(service.deleteBoard(uuid)).thenThrow(new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass()));
 
         mockMvc.perform(delete("/api/board/" + uuid)

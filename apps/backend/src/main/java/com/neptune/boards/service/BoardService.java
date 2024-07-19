@@ -37,13 +37,13 @@ public class BoardService implements IBoardService {
 
     @Override
     public BoardResponseDTO getBoard(UUID uuid) throws NeptuneBoardsException {
-        Optional<Board> dashboard = repository.findByUUID(uuid);
+        Optional<Board> board = repository.findByUUID(uuid);
 
-        if(dashboard.isEmpty()){
+        if(board.isEmpty()){
             throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
         }
 
-        Board savedBoard = dashboard.get();
+        Board savedBoard = board.get();
 
         return BoardMapper.mapBoardToResponseDTO(savedBoard);
     }

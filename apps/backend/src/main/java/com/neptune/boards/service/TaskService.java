@@ -23,7 +23,7 @@ public class TaskService implements ITaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private BoardRepository dashboardRepository;
+    private BoardRepository boardRepository;
 
     @Override
     public TaskResponseDTO getTask(UUID uuid) throws NeptuneBoardsException {
@@ -38,7 +38,7 @@ public class TaskService implements ITaskService {
 
     @Override
     public TaskResponseDTO createTask(UUID uuid, TaskRequestDTO taskRequest) throws NeptuneBoardsException {
-        Optional<Board> board = dashboardRepository.findByUUID(taskRequest.getBoard());
+        Optional<Board> board = boardRepository.findByUUID(taskRequest.getBoard());
 
         if (board.isEmpty()) {
             throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
