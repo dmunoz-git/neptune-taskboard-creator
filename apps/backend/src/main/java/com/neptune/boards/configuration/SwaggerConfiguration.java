@@ -14,7 +14,7 @@ public class SwaggerConfiguration {
         return new OpenAPI().info(new Info()
                 .title("Neptune Boards API")
                 .version("v1.0.0")
-                .description("API endpoints that allow create a complete tasks board")
+                .description("API endpoints that allow create a complete tasks project")
                 .termsOfService("http://swagger.io/terms/")
         );
     }

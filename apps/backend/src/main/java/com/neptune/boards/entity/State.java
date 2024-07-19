@@ -1,6 +1,5 @@
 package com.neptune.boards.entity;
 
-import com.neptune.boards.dto.BoardRequestDTO;
 import com.neptune.boards.dto.StateRequestDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity

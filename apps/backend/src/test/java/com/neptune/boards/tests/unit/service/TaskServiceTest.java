@@ -2,12 +2,11 @@ package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.dto.TaskRequestDTO;
 import com.neptune.boards.dto.TaskResponseDTO;
-import com.neptune.boards.entity.Board;
+import com.neptune.boards.entity.Project;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.entity.Task;
 import com.neptune.boards.exception.NeptuneBoardsException;
-import com.neptune.boards.mapper.TaskMapper;
-import com.neptune.boards.repository.BoardRepository;
+import com.neptune.boards.repository.ProjectRepository;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +31,7 @@ public class TaskServiceTest {
     TaskRepository taskRepository;
 
     @Mock
-    BoardRepository boardRepository;
+    ProjectRepository projectRepository;
 
     @InjectMocks
     private TaskService service;
@@ -67,11 +66,11 @@ public class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("Create Task: should create and return a new task for a given board")
+    @DisplayName("Create Task: should create and return a new task for a given project")
     void createTaskTest() throws NeptuneBoardsException {
         UUID boardUUID = UUID.randomUUID();
         Task task = Task.builder().name("New Task").build();
-        Board board = Board.builder().name("Test Board").UUID(boardUUID).build();
+        Project project = Project.builder().name("Test Project").UUID(boardUUID).build();
 
         TaskRequestDTO requestDTO = TaskRequestDTO.builder()
                 .name("New Task")
@@ -79,19 +78,19 @@ public class TaskServiceTest {
                 .board(boardUUID)
                 .build();
 
-        when(boardRepository.findByUUID(boardUUID)).thenReturn(Optional.of(board));
+        when(projectRepository.findByUUID(boardUUID)).thenReturn(Optional.of(project));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
         TaskResponseDTO createdTask = service.createTask(boardUUID, requestDTO);
 
         assertNotNull(createdTask);
         assertEquals("New Task", createdTask.getName());
-        verify(boardRepository, times(1)).findByUUID(boardUUID);
+        verify(projectRepository, times(1)).findByUUID(boardUUID);
         verify(taskRepository, times(1)).save(any(Task.class));
     }
 
     @Test
-    @DisplayName("Create Task: should throw exception if board not found")
+    @DisplayName("Create Task: should throw exception if project not found")
     void createTaskBoardNotFoundTest() {
         UUID boardUUID = UUID.randomUUID();
         TaskRequestDTO requestDTO = TaskRequestDTO.builder()
@@ -100,11 +99,11 @@ public class TaskServiceTest {
                 .board(boardUUID)
                 .build();
 
-        when(boardRepository.findByUUID(boardUUID)).thenReturn(Optional.empty());
+        when(projectRepository.findByUUID(boardUUID)).thenReturn(Optional.empty());
 
         assertThrows(NeptuneBoardsException.class, () -> service.createTask(boardUUID, requestDTO));
         verify(taskRepository, times(0)).save(any(Task.class));
-        verify(boardRepository, times(1)).findByUUID(boardUUID);
+        verify(projectRepository, times(1)).findByUUID(boardUUID);
     }
 
     @Test

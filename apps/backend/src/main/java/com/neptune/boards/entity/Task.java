@@ -34,7 +34,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "board_uuid")
-    private Board board;
+    private Project project;
 
     // Life cycle callbacks
     @PrePersist
