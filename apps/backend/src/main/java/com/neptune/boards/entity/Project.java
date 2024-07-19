@@ -1,6 +1,6 @@
 package com.neptune.boards.entity;
 
-import com.neptune.boards.dto.BoardRequestDTO;
+import com.neptune.boards.dto.ProjectRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,13 +14,13 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;  // Private id for table
 
     @Column(unique = true, nullable = false)
-    private UUID UUID; // Board identifier specified by the client
+    private UUID UUID; // Project identifier specified by the client
 
     @Column(unique = true, nullable = false)
     private String name;
@@ -34,11 +34,11 @@ public class Board {
     /*
     * TODO: Create an entity to Manage TemplateStates
     *
-    * @OneToMany(mappedBy="board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    * @OneToMany(mappedBy="project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     * private TemplateStates templateStates
     * */
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
 
     // Life cycle callbacks
@@ -54,8 +54,8 @@ public class Board {
     }
 
     // Update method from DTO
-    public Board updateFromDto(BoardRequestDTO dto) {
-        BoardBuilder builder = Board.builder()
+    public Project updateFromDto(ProjectRequestDTO dto) {
+        ProjectBuilder builder = Project.builder()
                 .id(this.id)
                 .UUID(this.UUID)
                 .name(dto.getName() != null ? dto.getName() : this.name)

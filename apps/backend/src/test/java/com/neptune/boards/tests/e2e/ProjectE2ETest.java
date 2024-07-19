@@ -10,50 +10,50 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class BoardE2ETest {
+public class ProjectE2ETest {
 
     @Test
-    @DisplayName("E2E: Create Board")
+    @DisplayName("E2E: Create Project")
     @Order(1)
     public void testCreateBoard(){
         String requestBody = """
             {
-              "name": "Test Board",
-              "description": "This is a test board"
+              "name": "Test Project",
+              "description": "This is a test project"
             }
          """;
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
+                .post("/api/project/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("Test Board"))
-                .body("description", equalTo("This is a test board"));
+                .body("name", equalTo("Test Project"))
+                .body("description", equalTo("This is a test project"));
     }
 
     @Test
-    @DisplayName("E2E: Get Board by UUID")
+    @DisplayName("E2E: Get Project by UUID")
     @Order(2)
     public void testGetBoardData(){
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
+                .get("/api/project/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("Test Board"))
-                .body("description", equalTo("This is a test board"));
+                .body("name", equalTo("Test Project"))
+                .body("description", equalTo("This is a test project"));
     }
 
     @Test
-    @DisplayName("E2E: Update Board")
+    @DisplayName("E2E: Update Project")
     @Order(3)
     public void testUpdateBoardData(){
         String requestBody = """
                         {
-                          "name": "Change board name"
+                          "name": "Change project name"
                         }
                 """;
 
@@ -61,21 +61,21 @@ public class BoardE2ETest {
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .put("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
+                .put("/api/project/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200)
-                .body("name", equalTo("Change board name"))
-                .body("description", equalTo("This is a test board"));
+                .body("name", equalTo("Change project name"))
+                .body("description", equalTo("This is a test project"));
     }
 
     @Test
-    @DisplayName("E2E: Delete Board")
+    @DisplayName("E2E: Delete Project")
     @Order(4)
     public void testDeleteBoardData(){
         given()
                 .contentType(ContentType.JSON)
                 .when()
-                .delete("/api/board/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
+                .delete("/api/project/2f5d5fbc-7989-4e2b-8b8a-f2d9eaf58a6c")
                 .then()
                 .statusCode(200);
     }

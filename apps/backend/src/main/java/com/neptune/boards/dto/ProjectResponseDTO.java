@@ -13,7 +13,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @Builder
-public class BoardResponseDTO {
+public class ProjectResponseDTO {
     private UUID UUID;
     private String name;
     private String description;

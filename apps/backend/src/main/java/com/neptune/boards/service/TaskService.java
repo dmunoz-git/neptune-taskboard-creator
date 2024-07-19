@@ -3,11 +3,11 @@ package com.neptune.boards.service;
 import com.neptune.boards.dto.TaskRequestDTO;
 import com.neptune.boards.dto.TaskResponseDTO;
 import com.neptune.boards.entity.Task;
-import com.neptune.boards.entity.Board;
+import com.neptune.boards.entity.Project;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.mapper.TaskMapper;
 import com.neptune.boards.repository.TaskRepository;
-import com.neptune.boards.repository.BoardRepository;
+import com.neptune.boards.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class TaskService implements ITaskService {
     private TaskRepository taskRepository;
 
     @Autowired
-    private BoardRepository dashboardRepository;
+    private ProjectRepository projectRepository;
 
     @Override
     public TaskResponseDTO getTask(UUID uuid) throws NeptuneBoardsException {
@@ -38,16 +38,16 @@ public class TaskService implements ITaskService {
 
     @Override
     public TaskResponseDTO createTask(UUID uuid, TaskRequestDTO taskRequest) throws NeptuneBoardsException {
-        Optional<Board> board = dashboardRepository.findByUUID(taskRequest.getBoard());
+        Optional<Project> board = projectRepository.findByUUID(taskRequest.getBoard());
 
         if (board.isEmpty()) {
-            throw new NeptuneBoardsException("Board not found", HttpStatus.NOT_FOUND, this.getClass());
+            throw new NeptuneBoardsException("Project not found", HttpStatus.NOT_FOUND, this.getClass());
         }
 
         Task task = Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
-                .board(board.get())
+                .project(board.get())
                 .build();
 
         return TaskMapper.mapBoardToResponseDTO(taskRepository.save(task));

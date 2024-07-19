@@ -11,7 +11,7 @@ public class TaskMapper {
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
                 .state(task.getState().getUUID())
-                .board(task.getBoard().getUUID())
+                .board(task.getProject().getUUID())
                 .build();
     }
 }

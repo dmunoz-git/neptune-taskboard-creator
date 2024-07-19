@@ -1,9 +1,9 @@
 package com.neptune.boards.tests.unit.repository;
 
-import com.neptune.boards.entity.Board;
+import com.neptune.boards.entity.Project;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.entity.Task;
-import com.neptune.boards.repository.BoardRepository;
+import com.neptune.boards.repository.ProjectRepository;
 import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.repository.TaskRepository;
 import org.junit.jupiter.api.*;
@@ -24,19 +24,19 @@ public class TaskRepositoryTest {
     TaskRepository repository;
 
     @Autowired
-    BoardRepository dashboardRepository;
+    ProjectRepository projectRepository;
 
     @Autowired
     StateRepository stateRepository;
 
     private Task task;
-    private Board board;
+    private Project project;
     private State state;
 
     @BeforeEach
     public void setUp() {
-        board =  Board.builder().name("Test Dashboard").build();
-        dashboardRepository.save(board);
+        project =  Project.builder().name("Test project").build();
+        projectRepository.save(project);
 
         state = State.builder().name("Test State").build();
         stateRepository.save(state);
@@ -44,7 +44,7 @@ public class TaskRepositoryTest {
         task = Task.builder()
                 .name("Test Task")
                 .description("Test Description")
-                .board(board)
+                .project(project)
                 .state(state).build();
         repository.save(task);
     }
@@ -55,7 +55,7 @@ public class TaskRepositoryTest {
         Task newTask = Task.builder()
                 .name("New Test Task")
                 .description("New Test Description")
-                .board(board)
+                .project(project)
                 .state(state).build();
 
         Task savedTask = repository.save(newTask);
