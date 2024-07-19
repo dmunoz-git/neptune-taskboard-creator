@@ -1,6 +1,6 @@
 package com.neptune.boards.entity;
 
-import com.neptune.boards.dto.ProjectRequestDTO;
+import com.neptune.boards.dto.project.ProjectRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

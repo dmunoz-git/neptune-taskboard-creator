@@ -1,4 +1,4 @@
-package com.neptune.boards.dto;
+package com.neptune.boards.dto.state;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

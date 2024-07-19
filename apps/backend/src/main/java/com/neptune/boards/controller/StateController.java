@@ -1,7 +1,7 @@
 package com.neptune.boards.controller;
 
-import com.neptune.boards.dto.StateRequestDTO;
-import com.neptune.boards.dto.StateResponseDTO;
+import com.neptune.boards.dto.state.StateRequestDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.StateService;
 import io.swagger.v3.oas.annotations.Operation;

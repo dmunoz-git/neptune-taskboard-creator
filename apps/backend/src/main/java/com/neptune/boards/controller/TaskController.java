@@ -1,7 +1,7 @@
 package com.neptune.boards.controller;
 
-import com.neptune.boards.dto.TaskRequestDTO;
-import com.neptune.boards.dto.TaskResponseDTO;
+import com.neptune.boards.dto.task.TaskRequestDTO;
+import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;

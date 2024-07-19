@@ -2,8 +2,8 @@ package com.neptune.boards.tests.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neptune.boards.controller.TaskController;
-import com.neptune.boards.dto.TaskRequestDTO;
-import com.neptune.boards.dto.TaskResponseDTO;
+import com.neptune.boards.dto.task.TaskRequestDTO;
+import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,11 +1,10 @@
 package com.neptune.boards.service;
 
-import com.neptune.boards.dto.StateRequestDTO;
-import com.neptune.boards.dto.StateResponseDTO;
+import com.neptune.boards.dto.state.StateRequestDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.mapper.StateMapper;
-import com.neptune.boards.mapper.TaskMapper;
 import com.neptune.boards.repository.StateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

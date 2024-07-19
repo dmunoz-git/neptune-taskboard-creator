@@ -1,6 +1,6 @@
 package com.neptune.boards.mapper;
 
-import com.neptune.boards.dto.ProjectResponseDTO;
+import com.neptune.boards.dto.project.ProjectResponseDTO;
 import com.neptune.boards.entity.Project;
 import com.neptune.boards.entity.Task;
 

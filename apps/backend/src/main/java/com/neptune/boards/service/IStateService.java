@@ -1,8 +1,7 @@
 package com.neptune.boards.service;
 
-import com.neptune.boards.dto.StateRequestDTO;
-import com.neptune.boards.dto.StateResponseDTO;
-import com.neptune.boards.entity.State;
+import com.neptune.boards.dto.state.StateRequestDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 
 import java.util.List;

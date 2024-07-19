@@ -1,6 +1,6 @@
 package com.neptune.boards.entity;
 
-import com.neptune.boards.dto.TaskRequestDTO;
+import com.neptune.boards.dto.task.TaskRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.neptune.boards.mapper;
 
-import com.neptune.boards.dto.StateResponseDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.entity.State;
 
 public class StateMapper {
