@@ -1,13 +1,9 @@
 package com.neptune.boards.dto.project;
 
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @Builder
 public class ProjectRequestDTO {
     private String name;

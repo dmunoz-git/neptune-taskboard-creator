@@ -9,7 +9,7 @@ import java.util.Collections;
 public class ProjectMapper {
     public static ProjectResponseDTO mapBoardToResponseDTO(Project project){
         return ProjectResponseDTO.builder()
-                .UUID(project.getUUID())
+                .uuid(project.getUUID())
                 .name(project.getName())
                 .description(project.getDescription())
                 .createdAt(project.getCreatedAt())
