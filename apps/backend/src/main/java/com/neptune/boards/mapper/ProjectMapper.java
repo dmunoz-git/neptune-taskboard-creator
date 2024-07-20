@@ -1,15 +1,16 @@
 package com.neptune.boards.mapper;
 
-import com.neptune.boards.dto.ProjectResponseDTO;
+import com.neptune.boards.dto.project.ProjectResponseDTO;
 import com.neptune.boards.entity.Project;
 import com.neptune.boards.entity.Task;
 
 import java.util.Collections;
 
+// TODO: Consider using specialized libraries like MapStruct or ModelMapper for object mapping
 public class ProjectMapper {
     public static ProjectResponseDTO mapBoardToResponseDTO(Project project){
         return ProjectResponseDTO.builder()
-                .UUID(project.getUUID())
+                .uuid(project.getUUID())
                 .name(project.getName())
                 .description(project.getDescription())
                 .createdAt(project.getCreatedAt())

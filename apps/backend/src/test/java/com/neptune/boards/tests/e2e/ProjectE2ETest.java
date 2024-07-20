@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-
+// TODO: Fix tests, create integration tests and e2e
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProjectE2ETest {

@@ -1,6 +1,6 @@
 package com.neptune.boards.mapper;
 
-import com.neptune.boards.dto.TaskResponseDTO;
+import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.entity.Task;
 
 public class TaskMapper {
@@ -10,7 +10,7 @@ public class TaskMapper {
                 .description(task.getDescription())
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
-                .state(task.getState().getUUID())
+                .state(StateMapper.mapStateToResponseDTO(task.getState()))
                 .board(task.getProject().getUUID())
                 .build();
     }

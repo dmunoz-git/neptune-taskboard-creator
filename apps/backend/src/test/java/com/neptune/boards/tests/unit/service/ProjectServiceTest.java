@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.unit.service;
 
-import com.neptune.boards.dto.ProjectRequestDTO;
-import com.neptune.boards.dto.ProjectResponseDTO;
+import com.neptune.boards.dto.project.ProjectRequestDTO;
+import com.neptune.boards.dto.project.ProjectResponseDTO;
 import com.neptune.boards.entity.Project;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.ProjectRepository;

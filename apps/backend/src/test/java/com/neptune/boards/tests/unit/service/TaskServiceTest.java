@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.unit.service;
 
-import com.neptune.boards.dto.TaskRequestDTO;
-import com.neptune.boards.dto.TaskResponseDTO;
+import com.neptune.boards.dto.task.TaskRequestDTO;
+import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.entity.Project;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.entity.Task;

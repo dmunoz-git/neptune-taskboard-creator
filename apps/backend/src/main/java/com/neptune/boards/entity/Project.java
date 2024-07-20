@@ -1,6 +1,6 @@
 package com.neptune.boards.entity;
 
-import com.neptune.boards.dto.ProjectRequestDTO;
+import com.neptune.boards.dto.project.ProjectRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +32,7 @@ public class Project {
     private LocalDate updatedAt;
 
     /*
-    * TODO: Create an entity to Manage TemplateStates
+    * TODO: Create an entity to Manage ProjectStates
     *
     * @OneToMany(mappedBy="project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     * private TemplateStates templateStates

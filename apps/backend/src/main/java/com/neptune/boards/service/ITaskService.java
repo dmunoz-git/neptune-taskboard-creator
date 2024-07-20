@@ -1,8 +1,7 @@
 package com.neptune.boards.service;
 
-import com.neptune.boards.dto.TaskRequestDTO;
-import com.neptune.boards.dto.TaskResponseDTO;
-import com.neptune.boards.entity.Task;
+import com.neptune.boards.dto.task.TaskRequestDTO;
+import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 
 import java.util.List;

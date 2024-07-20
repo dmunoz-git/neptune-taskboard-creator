@@ -1,6 +1,6 @@
 package com.neptune.boards.mapper;
 
-import com.neptune.boards.dto.StateResponseDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.entity.State;
 
 public class StateMapper {
@@ -8,7 +8,7 @@ public class StateMapper {
         return StateResponseDTO.builder()
                 .uuid(state.getUUID())
                 .name(state.getName())
-                .dod(state.getDod())
+                .definitionOfDone(state.getDod())
                 .build();
     }
 }
