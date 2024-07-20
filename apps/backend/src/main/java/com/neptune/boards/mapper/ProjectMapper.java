@@ -6,6 +6,7 @@ import com.neptune.boards.entity.Task;
 
 import java.util.Collections;
 
+// TODO: Consider using specialized libraries like MapStruct or ModelMapper for object mapping
 public class ProjectMapper {
     public static ProjectResponseDTO mapBoardToResponseDTO(Project project){
         return ProjectResponseDTO.builder()

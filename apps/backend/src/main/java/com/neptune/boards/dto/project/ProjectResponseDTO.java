@@ -12,21 +12,21 @@ import java.util.UUID;
 @Builder
 public class ProjectResponseDTO {
 
-    @JsonView(ProjectResponseViews.ProjectSummary.class)
+    @JsonView(ProjectResponseViews.Summary.class)
     private UUID uuid;
 
-    @JsonView(ProjectResponseViews.ProjectSummary.class)
+    @JsonView(ProjectResponseViews.Summary.class)
     private String name;
 
-    @JsonView(ProjectResponseViews.ProjectSummary.class)
+    @JsonView(ProjectResponseViews.Summary.class)
     private String description;
 
-    @JsonView(ProjectResponseViews.ProjectSummary.class)
+    @JsonView(ProjectResponseViews.Summary.class)
     private LocalDate createdAt;
 
-    @JsonView(ProjectResponseViews.ProjectDetail.class)
+    @JsonView(ProjectResponseViews.Detail.class)
     private LocalDate updatedAt;
 
-    @JsonView(ProjectResponseViews.ProjectDetail.class)
+    @JsonView(ProjectResponseViews.Detail.class)
     private List<UUID> tasks;
 }

@@ -35,7 +35,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An unexpected error occurred", content = @Content)
     })
     @PostMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ProjectResponseViews.ProjectSummary.class)
+    @JsonView(ProjectResponseViews.Summary.class)
     public ResponseEntity<ProjectResponseDTO> createProject(@PathVariable UUID uuid, @RequestBody ProjectRequestDTO boardRequest) {
         return new ResponseEntity<>(service.createBoard(uuid, boardRequest), HttpStatus.CREATED);
     }
@@ -46,7 +46,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An unexpected error occurred", content = @Content)
     })
     @GetMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ProjectResponseViews.ProjectDetail.class)
+    @JsonView(ProjectResponseViews.Detail.class)
     public ResponseEntity<ProjectResponseDTO> getProject(@PathVariable UUID uuid) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.getBoard(uuid), HttpStatus.OK);
     }
@@ -57,7 +57,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An unexpected error occurred", content = @Content)
     })
     @GetMapping(path = "/list", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ProjectResponseViews.ProjectDetail.class)
+    @JsonView(ProjectResponseViews.Detail.class)
     public ResponseEntity<List<ProjectResponseDTO>> getAllProjects() {
         return new ResponseEntity<>(service.getAllBoards(), HttpStatus.OK);
     }
@@ -68,7 +68,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An unexpected error occurred", content = @Content)
     })
     @DeleteMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ProjectResponseViews.ProjectSummary.class)
+    @JsonView(ProjectResponseViews.Summary.class)
     public ResponseEntity<ProjectResponseDTO> deleteProject(@PathVariable UUID uuid) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.deleteBoard(uuid), HttpStatus.OK);
     }
@@ -79,7 +79,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error - An unexpected error occurred", content = @Content)
     })
     @PutMapping(path = "/{uuid}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @JsonView(ProjectResponseViews.ProjectDetail.class)
+    @JsonView(ProjectResponseViews.Detail.class)
     public ResponseEntity<ProjectResponseDTO> updateProject(@PathVariable UUID uuid, @RequestBody ProjectRequestDTO boardRequest) throws NeptuneBoardsException {
         return new ResponseEntity<>(service.updateBoard(uuid, boardRequest), HttpStatus.OK);
     }

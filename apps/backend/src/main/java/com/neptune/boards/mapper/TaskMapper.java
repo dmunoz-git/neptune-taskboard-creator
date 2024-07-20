@@ -10,7 +10,7 @@ public class TaskMapper {
                 .description(task.getDescription())
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
-                .state(task.getState().getName())
+                .state(StateMapper.mapStateToResponseDTO(task.getState()))
                 .board(task.getProject().getUUID())
                 .build();
     }

@@ -1,5 +1,6 @@
 package com.neptune.boards.dto.state;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
