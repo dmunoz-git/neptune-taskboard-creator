@@ -14,5 +14,5 @@ import java.util.UUID;
 public class StateResponseDTO {
     public UUID uuid;
     public String name;
-    public String dod;
+    public String definitionOfDone;
 }

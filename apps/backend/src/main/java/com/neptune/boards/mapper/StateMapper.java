@@ -8,7 +8,7 @@ public class StateMapper {
         return StateResponseDTO.builder()
                 .uuid(state.getUUID())
                 .name(state.getName())
-                .dod(state.getDod())
+                .definitionOfDone(state.getDod())
                 .build();
     }
 }

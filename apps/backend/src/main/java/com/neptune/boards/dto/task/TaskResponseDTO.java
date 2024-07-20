@@ -17,6 +17,6 @@ public class TaskResponseDTO {
     private String description;
     private LocalDate createdAt;
     private LocalDate updatedAt;
-    private UUID state;
+    private String state;
     private UUID board;
 }
