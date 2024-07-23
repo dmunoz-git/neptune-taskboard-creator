@@ -1,12 +1,14 @@
 package com.neptune.boards.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Entity
 @Data
+@Builder
 public class ProjectState {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

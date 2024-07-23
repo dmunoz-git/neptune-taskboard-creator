@@ -1,13 +1,10 @@
 package com.neptune.boards.dto.state;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class StateRequestDTO {
     public String name;

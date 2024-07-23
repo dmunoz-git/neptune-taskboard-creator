@@ -30,7 +30,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "state_uuid")
-    private State state;
+    private ProjectState state;
 
     @ManyToOne
     @JoinColumn(name = "board_uuid")
