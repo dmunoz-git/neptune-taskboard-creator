@@ -42,14 +42,14 @@ public class ProjectService implements IProjectService {
                 .name(boardRequest.getName())
                 .description(boardRequest.getDescription())
                 .build();
+        // Save and autogenerate the rest of values
+        Project savedProject = this.repository.save(project);
 
         // Create state associations and add to project
         TaskStateDTO defaultState = boardRequest.getAllowedTaskStates().stream().filter(TaskStateDTO::getDefaultState).findFirst().orElse(null);
-        List<ProjectState> associations = this.createStatesAssociations(uuid, defaultStates, defaultState != null ? stateRepository.findByName(defaultState.getName()).get().getUUID() : defaultStates.get(0).getUUID());
+        List<ProjectState> associations = this.createStatesAssociations(savedProject, defaultStates, defaultState != null ? stateRepository.findByName(defaultState.getName()).get().getUUID() : defaultStates.get(0).getUUID());
         project.setTaskStates(associations);
 
-        // Save and autogenerate the rest of values
-        Project savedProject = this.repository.save(project);
 
         // Map database object to project response
         return ProjectMapper.mapBoardToResponseDTO(savedProject);
@@ -112,7 +112,7 @@ public class ProjectService implements IProjectService {
                 State newState = State.builder()
                         .UUID(taskState.getStateUUID())
                         .name(taskState.getName())
-                        .dod(taskState.dod)
+                        .definitionOfDone(taskState.definitionOfDone)
                         .build();
 
                 stateRepository.save(newState);
@@ -125,14 +125,13 @@ public class ProjectService implements IProjectService {
         return projectStates;
     }
 
-    private List<ProjectState> createStatesAssociations(UUID projectUUID, List<State> states, UUID defaultState) {
+    private List<ProjectState> createStatesAssociations(Project project, List<State> states, UUID defaultState) {
         List<ProjectState> projectStates = new ArrayList<>();
-        Optional<Project> project = repository.findByUUID(projectUUID);
 
         for(State state: states){
             ProjectState projectState = ProjectState.builder()
                     .UUID(UUID.randomUUID())
-                    .project(project.get())
+                    .project(project)
                     .state(state)
                     .defaultState(state.getUUID().equals(defaultState))
                     .build();

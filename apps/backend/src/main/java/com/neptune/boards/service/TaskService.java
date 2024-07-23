@@ -6,6 +6,7 @@ import com.neptune.boards.entity.Task;
 import com.neptune.boards.entity.Project;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.mapper.TaskMapper;
+import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.repository.TaskRepository;
 import com.neptune.boards.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class TaskService implements ITaskService {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private StateRepository stateRepository;
 
     @Override
     public TaskResponseDTO getTask(UUID uuid) throws NeptuneBoardsException {

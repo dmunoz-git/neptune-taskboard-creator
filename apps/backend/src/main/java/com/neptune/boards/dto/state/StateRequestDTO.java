@@ -8,5 +8,5 @@ import lombok.*;
 @Builder
 public class StateRequestDTO {
     public String name;
-    public String dod;
+    public String definitionOfDone;
 }

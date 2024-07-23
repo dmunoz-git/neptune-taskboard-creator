@@ -34,7 +34,7 @@ public class StateService implements IStateService{
         State state = State.builder()
                 .UUID(uuid)
                 .name(stateRequest.getName())
-                .dod(stateRequest.getDod())
+                .definitionOfDone(stateRequest.getDefinitionOfDone())
                 .build();
 
         return StateMapper.mapStateToResponseDTO(repository.save(state));
