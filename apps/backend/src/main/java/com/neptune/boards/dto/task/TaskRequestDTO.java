@@ -15,4 +15,5 @@ public class TaskRequestDTO {
     private String name;
     private String description;
     private UUID board;
+    private UUID state;
 }
