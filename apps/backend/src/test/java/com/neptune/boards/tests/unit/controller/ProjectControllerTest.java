@@ -39,15 +39,14 @@ class ProjectControllerTest {
     private ProjectService service;
 
     private Project projectTest;
-    private final UUID uuid = UUID.randomUUID();
+    private final UUID projectUUID = UUID.randomUUID();
     private ProjectRequestDTO requestBoardTest;
     private ProjectResponseDTO responseDTOTest;
 
     @BeforeEach
     void setUp() {
         this.projectTest = Project.builder()
-                .id(1L)
-                .UUID(this.uuid)
+                .UUID(this.projectUUID)
                 .name("Test project")
                 .description("Test project description")
                 .createdAt(LocalDate.now())
@@ -68,16 +67,17 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DisplayName("Create a Project: should return the created project")
+    @DisplayName("Unit Test: Create a Project: should return the created project")
     public void createBoardControllerTest() throws Exception {
         String boardRequestJson = objectMapper.writeValueAsString(requestBoardTest);
 
-        Mockito.when(service.createBoard(uuid, requestBoardTest)).thenReturn(this.responseDTOTest);
+        Mockito.when(service.createBoard(this.projectUUID, requestBoardTest)).thenReturn(this.responseDTOTest);
 
-        mockMvc.perform(post("/api/project/" + this.uuid)
+        mockMvc.perform(post("/api/project/" + this.projectTest)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(boardRequestJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
@@ -94,7 +94,7 @@ class ProjectControllerTest {
     @Test
     @DisplayName("Get Project by UUID: should return project")
     public void getBoardControllerTest() throws Exception {
-        Mockito.when(service.getBoard(uuid)).thenReturn(this.responseDTOTest);
+        Mockito.when(service.getBoard(this.projectUUID)).thenReturn(this.responseDTOTest);
 
         mockMvc.perform(get("/api/project/" + projectTest.getUUID())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -104,7 +104,7 @@ class ProjectControllerTest {
     @Test
     @DisplayName("Get All Boards: should return list of boards")
     public void testGetAllboards() throws Exception {
-        List<ProjectResponseDTO> boards = Arrays.asList(ProjectResponseDTO.builder().UUID(UUID.randomUUID()).name("Board1").build(), ProjectResponseDTO.builder().UUID(UUID.randomUUID()).name("Board2").build());
+        List<ProjectResponseDTO> boards = Arrays.asList(ProjectResponseDTO.builder().uuid(UUID.randomUUID()).name("Board1").build(), ProjectResponseDTO.builder().uuid(UUID.randomUUID()).name("Board2").build());
         Mockito.when(service.getAllBoards()).thenReturn(boards);
 
         mockMvc.perform(get("/api/project/list")
@@ -118,7 +118,7 @@ class ProjectControllerTest {
     @Test
     @DisplayName("Delete Boards by ID: should delete project if found")
     public void testDeleteboardById() throws Exception {
-        Mockito.when(service.deleteBoard(uuid)).thenReturn(this.responseDTOTest);
+        Mockito.when(service.deleteBoard(this.projectUUID)).thenReturn(this.responseDTOTest);
 
         mockMvc.perform(delete("/api/project/" + this.projectTest.getUUID())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -129,9 +129,9 @@ class ProjectControllerTest {
     @Test
     @DisplayName("Delete Boards by UUID: should return not found if project does not exist")
     public void testDeleteboardByIdNotFound() throws Exception {
-        Mockito.when(service.deleteBoard(uuid)).thenThrow(new NeptuneBoardsException("Project not found", HttpStatus.NOT_FOUND, this.getClass()));
+        Mockito.when(service.deleteBoard(this.projectUUID)).thenThrow(new NeptuneBoardsException("Project not found", HttpStatus.NOT_FOUND, this.getClass()));
 
-        mockMvc.perform(delete("/api/project/" + uuid)
+        mockMvc.perform(delete("/api/project/" + this.projectUUID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -142,7 +142,7 @@ class ProjectControllerTest {
     public void testUpdateBoard() throws Exception {
         UUID uuid = projectTest.getUUID();
         ProjectResponseDTO updatedBoard = ProjectResponseDTO.builder()
-                .UUID(uuid)
+                .uuid(uuid)
                 .name("Updated Project")
                 .description(projectTest.getDescription())
                 .createdAt(projectTest.getCreatedAt())
@@ -161,6 +161,6 @@ class ProjectControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(updatedBoard.getName()))
                 .andExpect(jsonPath("$.description").value(updatedBoard.getDescription()))
-                .andExpect(jsonPath("$.UUID").value(updatedBoard.getUUID().toString()));
+                .andExpect(jsonPath("$.UUID").value(updatedBoard.getUuid().toString()));
     }
 }

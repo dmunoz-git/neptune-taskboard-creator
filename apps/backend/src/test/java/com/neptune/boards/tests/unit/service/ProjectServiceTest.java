@@ -65,7 +65,7 @@ public class ProjectServiceTest {
         assertNotNull(savedBoard);
 
         // Check if the data were saved correctly
-        assertEquals(project.getUUID(), savedBoard.getUUID());
+        assertEquals(project.getUUID(), savedBoard.getUuid());
         assertEquals(project.getName(), savedBoard.getName());
         assertEquals(project.getDescription(), savedBoard.getDescription());
 

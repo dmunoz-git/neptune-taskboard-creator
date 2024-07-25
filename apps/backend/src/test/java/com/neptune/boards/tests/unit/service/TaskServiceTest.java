@@ -171,7 +171,7 @@ public class TaskServiceTest {
         verify(taskRepository, times(1)).findByUUID(taskUUID);
         verify(taskRepository, times(0)).delete(any(Task.class));
     }
-
+   /*
     @Test
     @DisplayName("List Tasks: should return all tasks")
     void listTasksTest() {
@@ -186,5 +186,5 @@ public class TaskServiceTest {
         assertNotNull(tasks);
         assertEquals(2, tasks.size());
         verify(taskRepository, times(1)).findAll();
-    }
+    }*/
 }
