@@ -2,9 +2,7 @@ package com.neptune.boards.entity;
 
 import com.neptune.boards.dto.task.TaskRequestDTO;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,7 +30,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "state_uuid")
-    private State state;
+    private ProjectState state;
 
     @ManyToOne
     @JoinColumn(name = "board_uuid")

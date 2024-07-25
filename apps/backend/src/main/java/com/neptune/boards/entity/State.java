@@ -2,17 +2,14 @@ package com.neptune.boards.entity;
 
 import com.neptune.boards.dto.state.StateRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class State {
     @Id
@@ -25,14 +22,14 @@ public class State {
     @Column(unique = true, nullable = false)
     private String name;
 
-    private String dod; // Definition of Done (DoD)
+    private String definitionOfDone; // Definition of Done (DoD)
 
     public State updateFromDto(StateRequestDTO dto) {
         State.StateBuilder builder = State.builder()
                 .id(this.id)
                 .UUID(this.UUID)
                 .name(dto.getName() != null ? dto.getName() : this.name)
-                .dod(dto.getDod() != null ? dto.getDod() : this.dod);
+                .definitionOfDone(dto.getDefinitionOfDone() != null ? dto.getDefinitionOfDone() : this.definitionOfDone);
         return builder.build();
     }
 }

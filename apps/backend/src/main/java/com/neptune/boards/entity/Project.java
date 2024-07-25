@@ -31,12 +31,8 @@ public class Project {
 
     private LocalDate updatedAt;
 
-    /*
-    * TODO: Create an entity to Manage ProjectStates
-    *
-    * @OneToMany(mappedBy="project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    * private TemplateStates templateStates
-    * */
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProjectState> taskStates;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Task> tasks;
