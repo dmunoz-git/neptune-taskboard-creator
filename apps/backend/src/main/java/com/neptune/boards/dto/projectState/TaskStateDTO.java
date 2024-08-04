@@ -1,10 +1,7 @@
 package com.neptune.boards.dto.projectState;
 
 import com.neptune.boards.dto.state.StateRequestDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -12,6 +9,7 @@ import java.util.UUID;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class TaskStateDTO extends StateRequestDTO {
     private UUID stateUUID;
     private boolean defaultState;

@@ -1,0 +1,24 @@
+{
+  "name": "Test Project",
+  "description": "A project created for E2E testing purposes",
+  "allowedTaskStates": [
+    {
+      "name": "To Do",
+      "definitionOfDone": "Tasks that need to be started",
+      "stateUUID": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "defaultState": true
+    },
+    {
+      "name": "In Progress",
+      "definitionOfDone": "Tasks that are currently being worked on",
+      "stateUUID": "7f73bf92-647c-4d3a-9a4e-9071d6d50a78",
+      "defaultState": false
+    },
+    {
+      "name": "Done",
+      "definitionOfDone": "Tasks that have been completed",
+      "stateUUID": "d1234567-89ab-4cde-f012-3456789abcde",
+      "defaultState": false
+    }
+  ]
+}
