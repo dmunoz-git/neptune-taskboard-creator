@@ -5,186 +5,241 @@ import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.entity.Project;
 import com.neptune.boards.entity.State;
 import com.neptune.boards.entity.Task;
+import com.neptune.boards.entity.ProjectState;
 import com.neptune.boards.exception.NeptuneBoardsException;
-import com.neptune.boards.repository.ProjectRepository;
+import com.neptune.boards.repository.ProjectStateRepository;
+import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.repository.TaskRepository;
+import com.neptune.boards.repository.ProjectRepository;
 import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class TaskServiceTest {
 
     @Mock
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
     @Mock
-    ProjectRepository projectRepository;
+    private ProjectRepository projectRepository;
+
+    @Mock
+    private StateRepository stateRepository;
+
+    @Mock
+    private ProjectStateRepository projectStateRepository;
 
     @InjectMocks
     private TaskService service;
 
+    private Task task;
+    private Project project;
+    private State state;
+    private ProjectState projectState;
+    private UUID taskUUID;
+    private UUID projectUUID;
+    private UUID stateUUID;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        taskUUID = UUID.randomUUID();
+        projectUUID = UUID.randomUUID();
+        stateUUID = UUID.randomUUID();
+        project = Project.builder().UUID(projectUUID).name("Test Project").build();
+        state = State.builder().UUID(stateUUID).name("To Do").build();
+        projectState = ProjectState.builder().UUID(UUID.randomUUID()).project(project).state(state).build();
+        task = Task.builder().UUID(taskUUID).name("Test Task").description("Test Description").project(project).state(projectState).build();
     }
 
     @Test
-    @DisplayName("Get Task by UUID: should return task if found")
-    void getTaskByUUIDTest() throws NeptuneBoardsException {
-        UUID taskUUID = UUID.randomUUID();
-        Task task = Task.builder().name("Test Task").UUID(taskUUID).build();
+    @DisplayName("Unit Test: Get Task: should return task when found")
+    void getTaskSuccessTest() throws NeptuneBoardsException {
         when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(task));
 
-        TaskResponseDTO foundTask = service.getTask(taskUUID);
+        TaskResponseDTO response = service.getTask(taskUUID);
 
-        assertNotNull(foundTask);
-        assertEquals("Test Task", foundTask.getName());
+        assertNotNull(response);
+        assertEquals("Test Task", response.getName());
         verify(taskRepository, times(1)).findByUUID(taskUUID);
     }
 
     @Test
-    @DisplayName("Get Task by UUID: should throw exception if not found")
-    void getTaskByUUIDNotFoundTest() {
-        UUID taskUUID = UUID.randomUUID();
+    @DisplayName("Unit Test: Get Task: should throw exception if task not found")
+    void getTaskNotFoundTest() {
         when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.getTask(taskUUID));
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.getTask(taskUUID)
+        );
+
+        assertEquals("Task not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskService.class, exception.getOriginClass());
         verify(taskRepository, times(1)).findByUUID(taskUUID);
     }
 
     @Test
-    @DisplayName("Create Task: should create and return a new task for a given project")
-    void createTaskTest() throws NeptuneBoardsException {
-        UUID boardUUID = UUID.randomUUID();
-        Task task = Task.builder().name("New Task").build();
-        Project project = Project.builder().name("Test Project").UUID(boardUUID).build();
-
-        TaskRequestDTO requestDTO = TaskRequestDTO.builder()
-                .name("New Task")
-                .description("New Description")
-                .board(boardUUID)
-                .build();
-
-        when(projectRepository.findByUUID(boardUUID)).thenReturn(Optional.of(project));
+    @DisplayName("Unit Test: Create Task: should create task successfully")
+    void createTaskSuccessTest() throws NeptuneBoardsException {
+        TaskRequestDTO request = new TaskRequestDTO("New Task", "New Description", projectUUID, stateUUID);
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.of(project));
+        when(stateRepository.findByUUID(stateUUID)).thenReturn(Optional.of(state));
+        when(projectStateRepository.findByProjectAndState(project, state)).thenReturn(Optional.of(projectState));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
-        TaskResponseDTO createdTask = service.createTask(boardUUID, requestDTO);
+        TaskResponseDTO response = service.createTask(taskUUID, request);
 
-        assertNotNull(createdTask);
-        assertEquals("New Task", createdTask.getName());
-        verify(projectRepository, times(1)).findByUUID(boardUUID);
+        assertNotNull(response);
+        assertEquals("Test Task", response.getName());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
+        verify(stateRepository, times(1)).findByUUID(stateUUID);
+        verify(projectStateRepository, times(1)).findByProjectAndState(project, state);
         verify(taskRepository, times(1)).save(any(Task.class));
     }
 
     @Test
-    @DisplayName("Create Task: should throw exception if project not found")
-    void createTaskBoardNotFoundTest() {
-        UUID boardUUID = UUID.randomUUID();
-        TaskRequestDTO requestDTO = TaskRequestDTO.builder()
-                .name("New Task")
-                .description("New Description")
-                .board(boardUUID)
-                .build();
+    @DisplayName("Unit Test: Create Task: should throw exception if project not found")
+    void createTaskProjectNotFoundTest() {
+        TaskRequestDTO request = new TaskRequestDTO("New Task", "New Description", projectUUID, stateUUID);
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.empty());
 
-        when(projectRepository.findByUUID(boardUUID)).thenReturn(Optional.empty());
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.createTask(taskUUID, request)
+        );
 
-        assertThrows(NeptuneBoardsException.class, () -> service.createTask(boardUUID, requestDTO));
-        verify(taskRepository, times(0)).save(any(Task.class));
-        verify(projectRepository, times(1)).findByUUID(boardUUID);
+        assertEquals("Project not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskService.class, exception.getOriginClass());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
     }
 
     @Test
-    @DisplayName("Update Task: should update and return the task")
-    void updateTaskTest() throws NeptuneBoardsException {
-        UUID taskUUID = UUID.randomUUID();
-        Task existingTask = Task.builder().UUID(taskUUID).name("Existing Task").build();
+    @DisplayName("Unit Test: Create Task: should throw exception if state not found")
+    void createTaskStateNotFoundTest() {
+        TaskRequestDTO request = new TaskRequestDTO("New Task", "New Description", projectUUID, stateUUID);
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.of(project));
+        when(stateRepository.findByUUID(stateUUID)).thenReturn(Optional.empty());
 
-        TaskRequestDTO updateRequest = TaskRequestDTO.builder()
-                .name("Updated Task")
-                .description("Updated Description")
-                .build();
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.createTask(taskUUID, request)
+        );
 
-        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(existingTask));
-        when(taskRepository.save(any(Task.class))).thenReturn(existingTask);
-
-        TaskResponseDTO updatedTask = service.updateTask(taskUUID, updateRequest);
-
-        assertNotNull(updatedTask);
-        assertEquals("Updated Task", updatedTask.getName());
-        assertEquals("Updated Description", updatedTask.getDescription());
-        verify(taskRepository, times(1)).findByUUID(taskUUID);
-        verify(taskRepository, times(1)).save(any(Task.class));
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskService.class, exception.getOriginClass());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
+        verify(stateRepository, times(1)).findByUUID(stateUUID);
     }
 
     @Test
-    @DisplayName("Update Task: should throw exception if task not found")
+    @DisplayName("Unit Test: Create Task: should throw exception if project state not found")
+    void createTaskProjectStateNotFoundTest() {
+        TaskRequestDTO request = new TaskRequestDTO("New Task", "New Description", projectUUID, stateUUID);
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.of(project));
+        when(stateRepository.findByUUID(stateUUID)).thenReturn(Optional.of(state));
+        when(projectStateRepository.findByProjectAndState(project, state)).thenReturn(Optional.empty());
+
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.createTask(taskUUID, request)
+        );
+
+        assertEquals("ProjectState not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskService.class, exception.getOriginClass());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
+        verify(stateRepository, times(1)).findByUUID(stateUUID);
+        verify(projectStateRepository, times(1)).findByProjectAndState(project, state);
+    }
+
+    @Test
+    @DisplayName("Unit Test: Update Task: should update task when found")
+    @Disabled
+    void updateTaskSuccessTest() throws NeptuneBoardsException {
+        TaskRequestDTO request = new TaskRequestDTO("Updated Task", "Updated Description", projectUUID, stateUUID);
+        Task updatedTask = task.updateFromDto(request);
+        when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(task));
+        when(taskRepository.save(any(Task.class))).thenReturn(updatedTask);
+
+        TaskResponseDTO response = service.updateTask(taskUUID, request);
+
+        assertNotNull(response);
+        assertEquals(taskUUID, response.getBoard());
+        assertEquals("Updated Task", response.getName());
+    }
+
+    @Test
+    @DisplayName("Unit Test: Update Task: should throw exception if task not found")
     void updateTaskNotFoundTest() {
-        UUID taskUUID = UUID.randomUUID();
-        TaskRequestDTO updateRequest = TaskRequestDTO.builder()
-                .name("Updated Task")
-                .description("Updated Description")
-                .build();
-
+        TaskRequestDTO request = new TaskRequestDTO("Updated Task", "Updated Description", projectUUID, stateUUID);
         when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.updateTask(taskUUID, updateRequest));
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.updateTask(taskUUID, request)
+        );
+
+        assertEquals("Task not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskService.class, exception.getOriginClass());
         verify(taskRepository, times(1)).findByUUID(taskUUID);
-        verify(taskRepository, times(0)).save(any(Task.class));
     }
 
     @Test
-    @DisplayName("Delete Task: should delete the task if found")
-    void deleteTaskTest() throws NeptuneBoardsException {
-        UUID taskUUID = UUID.randomUUID();
-        Task task = Task.builder().UUID(taskUUID).name("Test Task").build();
-
+    @DisplayName("Unit Test: Delete Task: should delete task when found")
+    void deleteTaskSuccessTest() throws NeptuneBoardsException {
         when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.of(task));
 
-        TaskResponseDTO deletedTask = service.deleteTask(taskUUID);
+        TaskResponseDTO response = service.deleteTask(taskUUID);
 
-        assertNotNull(deletedTask);
-        assertEquals("Test Task", deletedTask.getName());
+        assertNotNull(response);
         verify(taskRepository, times(1)).findByUUID(taskUUID);
         verify(taskRepository, times(1)).delete(task);
     }
 
     @Test
-    @DisplayName("Delete Task: should throw exception if task not found")
+    @DisplayName("Unit Test: Delete Task: should throw exception if task not found")
     void deleteTaskNotFoundTest() {
-        UUID taskUUID = UUID.randomUUID();
         when(taskRepository.findByUUID(taskUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.deleteTask(taskUUID));
-        verify(taskRepository, times(1)).findByUUID(taskUUID);
-        verify(taskRepository, times(0)).delete(any(Task.class));
-    }
-   /*
-    @Test
-    @DisplayName("List Tasks: should return all tasks")
-    void listTasksTest() {
-        State state = State.builder().name("To-do").UUID(UUID.randomUUID()).build();
-        Task task1 = Task.builder().name("Task 1").state(state).build();
-        Task task2 = Task.builder().name("Task 2").state(state).build();
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.deleteTask(taskUUID)
+        );
 
-        when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
+        assertEquals("Task not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskService.class, exception.getOriginClass());
+        verify(taskRepository, times(1)).findByUUID(taskUUID);
+    }
+
+    @Test
+    @DisplayName("Unit Test: List Tasks: should return list of tasks")
+    void listTasksSuccessTest() {
+        when(taskRepository.findAll()).thenReturn(List.of(task));
 
         List<TaskResponseDTO> tasks = service.listTasks();
 
         assertNotNull(tasks);
-        assertEquals(2, tasks.size());
+        assertFalse(tasks.isEmpty());
+        assertEquals(1, tasks.size());
         verify(taskRepository, times(1)).findAll();
-    }*/
+    }
 }

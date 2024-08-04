@@ -1,7 +1,7 @@
 package com.neptune.boards.tests.unit.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neptune.boards.controller.TaskController;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.dto.task.TaskRequestDTO;
 import com.neptune.boards.dto.task.TaskResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
@@ -9,132 +9,155 @@ import com.neptune.boards.service.TaskService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(TaskController.class)
-class TaskControllerTest {
+public class TaskControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private TaskService service;
 
-    @MockBean
-    private TaskService taskService;
+    @InjectMocks
+    private TaskController controller;
 
-    private TaskResponseDTO taskResponse;
     private TaskRequestDTO taskRequest;
+    private TaskResponseDTO taskResponse;
     private UUID taskUUID;
     private UUID boardUUID;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private UUID stateUUID;
 
     @BeforeEach
     void setUp() {
-        this.taskUUID = UUID.randomUUID();
-        this.boardUUID = UUID.randomUUID();
-
-        this.taskRequest = TaskRequestDTO.builder()
-                .name("Test Task")
-                .description("Test Description")
-                .board(boardUUID)
-                .build();
-
-        this.taskResponse = TaskResponseDTO.builder()
-                .name("Test Task")
-                .description("Test Description")
-                .board(boardUUID)
-                .build();
+        MockitoAnnotations.openMocks(this);
+        taskUUID = UUID.randomUUID();
+        boardUUID = UUID.randomUUID();
+        stateUUID = UUID.randomUUID();
+        taskRequest = new TaskRequestDTO("Test Task", "Test Description", boardUUID, stateUUID);
+        taskResponse = new TaskResponseDTO("Test Task", "Test Description", LocalDate.now(), LocalDate.now(), new StateResponseDTO(taskUUID, "To Do", null), boardUUID);
     }
 
     @Test
-    @DisplayName("Get Task by UUID: should return task if found")
-    public void testGetTaskById() throws Exception {
-        Mockito.when(taskService.getTask(taskUUID)).thenReturn(this.taskResponse);
+    @DisplayName("Unit Test: Get Task by UUID: should return task when found")
+    void getTaskByIdSuccessTest() throws NeptuneBoardsException {
+        when(service.getTask(any(UUID.class))).thenReturn(taskResponse);
 
-        mockMvc.perform(get("/api/task/{uuid}", taskUUID)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test Task"));
-    }
-/*
-    @Test
-    @DisplayName("Get Task by UUID: should return not found if task does not exist")
-    public void testGetTaskByIdNotFound() throws Exception {
-        Mockito.when(taskService.getTask(taskUUID)).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, this.getClass()));
+        ResponseEntity<TaskResponseDTO> response = controller.getTaskById(taskUUID);
 
-        mockMvc.perform(get("/api/task/{uuid}", taskUUID)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(taskResponse, response.getBody());
+        verify(service, times(1)).getTask(taskUUID);
     }
 
     @Test
-    @DisplayName("Create Task: should create and return a new task")
-    public void testCreateTask() throws Exception {
-        Mockito.when(taskService.createTask(boardUUID, taskRequest)).thenReturn(this.taskResponse);
+    @DisplayName("Unit Test: Get Task by UUID: should throw exception if task not found")
+    void getTaskByIdNotFoundTest() throws NeptuneBoardsException {
+        when(service.getTask(any(UUID.class))).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, TaskController.class));
 
-        mockMvc.perform(post("/api/task/{uuid}", boardUUID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(taskRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Test Task"));
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> controller.getTaskById(taskUUID)
+        );
+
+        assertEquals("Task not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskController.class, exception.getOriginClass());
+        verify(service, times(1)).getTask(taskUUID);
     }
 
     @Test
-    @DisplayName("Update Task: should update the task")
-    public void testUpdateTask() throws Exception {
-        Mockito.when(taskService.updateTask(taskUUID, taskRequest)).thenReturn(this.taskResponse);
+    @DisplayName("Unit Test: Create Task: should create task successfully")
+    void createTaskSuccessTest() throws NeptuneBoardsException {
+        when(service.createTask(any(UUID.class), any(TaskRequestDTO.class))).thenReturn(taskResponse);
 
-        mockMvc.perform(put("/api/task/{uuid}", taskUUID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(taskRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test Task"));
+        ResponseEntity<TaskResponseDTO> response = controller.createTask(taskUUID, taskRequest);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(taskResponse, response.getBody());
+        verify(service, times(1)).createTask(taskUUID, taskRequest);
     }
 
     @Test
-    @DisplayName("Delete Task by UUID: should delete task if found")
-    public void testDeleteTaskById() throws Exception {
-        Mockito.when(taskService.deleteTask(taskUUID)).thenReturn(this.taskResponse);
+    @DisplayName("Unit Test: Delete Task: should delete task successfully")
+    void deleteTaskSuccessTest() throws NeptuneBoardsException {
+        when(service.deleteTask(any(UUID.class))).thenReturn(taskResponse);
 
-        mockMvc.perform(delete("/api/task/{uuid}", taskUUID)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test Task"));
+        ResponseEntity<TaskResponseDTO> response = controller.deleteTask(taskUUID);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(taskResponse, response.getBody());
+        verify(service, times(1)).deleteTask(taskUUID);
     }
 
     @Test
-    @DisplayName("Delete Task by UUID: should return not found if task does not exist")
-    public void testDeleteTaskByIdNotFound() throws Exception {
-        Mockito.when(taskService.deleteTask(taskUUID)).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, this.getClass()));
+    @DisplayName("Unit Test: Delete Task: should throw exception if task not found")
+    void deleteTaskNotFoundTest() throws NeptuneBoardsException {
+        when(service.deleteTask(any(UUID.class))).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, TaskController.class));
 
-        mockMvc.perform(delete("/api/task/{uuid}", taskUUID)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> controller.deleteTask(taskUUID)
+        );
+
+        assertEquals("Task not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskController.class, exception.getOriginClass());
+        verify(service, times(1)).deleteTask(taskUUID);
     }
 
     @Test
-    @DisplayName("List Tasks: should return list of tasks")
-    public void testListTasks() throws Exception {
-        List<TaskResponseDTO> tasks = Arrays.asList(this.taskResponse);
+    @DisplayName("Unit Test: Update Task: should update task successfully")
+    void updateTaskSuccessTest() throws NeptuneBoardsException {
+        when(service.updateTask(any(UUID.class), any(TaskRequestDTO.class))).thenReturn(taskResponse);
 
-        Mockito.when(taskService.listTasks()).thenReturn(tasks);
+        ResponseEntity<TaskResponseDTO> response = controller.updateTask(taskUUID, taskRequest);
 
-        mockMvc.perform(get("/api/task/list")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Test Task"));
-    }*/
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(taskResponse, response.getBody());
+        verify(service, times(1)).updateTask(taskUUID, taskRequest);
+    }
+
+    @Test
+    @DisplayName("Unit Test: Update Task: should throw exception if task not found")
+    void updateTaskNotFoundTest() throws NeptuneBoardsException {
+        when(service.updateTask(any(UUID.class), any(TaskRequestDTO.class))).thenThrow(new NeptuneBoardsException("Task not found", HttpStatus.NOT_FOUND, TaskController.class));
+
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> controller.updateTask(taskUUID, taskRequest)
+        );
+
+        assertEquals("Task not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(TaskController.class, exception.getOriginClass());
+        verify(service, times(1)).updateTask(taskUUID, taskRequest);
+    }
+
+    @Test
+    @DisplayName("Unit Test: List Tasks: should return list of tasks")
+    void listTasksSuccessTest() {
+        when(service.listTasks()).thenReturn(List.of(taskResponse));
+
+        ResponseEntity<List<TaskResponseDTO>> response = controller.listTasks();
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().isEmpty());
+        assertEquals(1, response.getBody().size());
+        verify(service, times(1)).listTasks();
+    }
 }

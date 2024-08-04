@@ -1,6 +1,7 @@
 package com.neptune.boards.dto.task;
 
 import com.neptune.boards.dto.state.StateResponseDTO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Builder;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class TaskResponseDTO {
     private String name;
     private String description;

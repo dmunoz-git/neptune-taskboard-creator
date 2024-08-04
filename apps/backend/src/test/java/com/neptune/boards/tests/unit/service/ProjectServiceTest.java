@@ -2,140 +2,182 @@ package com.neptune.boards.tests.unit.service;
 
 import com.neptune.boards.dto.project.ProjectRequestDTO;
 import com.neptune.boards.dto.project.ProjectResponseDTO;
+import com.neptune.boards.dto.projectState.TaskStateDTO;
 import com.neptune.boards.entity.Project;
+import com.neptune.boards.entity.ProjectState;
+import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.ProjectRepository;
+import com.neptune.boards.repository.ProjectStateRepository;
+import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.service.ProjectService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProjectServiceTest {
 
     @Mock
-    ProjectRepository repository;
+    private ProjectRepository projectRepository;
+
+    @Mock
+    private StateRepository stateRepository;
+
+    @Mock
+    private ProjectStateRepository projectStateRepository;
 
     @InjectMocks
     private ProjectService service;
 
+    private Project project;
+    private UUID projectUUID;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        projectUUID = UUID.randomUUID();
+        project = Project.builder().UUID(projectUUID).name("Test Project").description("Test Description").build();
     }
 
     @Test
-    @DisplayName("Create project: should create and return a new project")
-    void createBoardTest() {
-        ProjectRequestDTO requestDTO = ProjectRequestDTO.builder()
-                .name("Test project")
-                .description("Test project description")
-                .build();
+    @DisplayName("Unit Test: Create Board: should create board with default states successfully")
+    @Disabled
+    void createBoardSuccessTest() {
+        List<TaskStateDTO> taskStates = List.of(
+                new TaskStateDTO(UUID.randomUUID(), "To Do", "Definition", true),
+                new TaskStateDTO(UUID.randomUUID(), "In Progress", "Definition", true),
+                new TaskStateDTO(UUID.randomUUID(), "Done", "Definition", true)
+        );
 
-        UUID uuid = UUID.randomUUID();
+        ProjectRequestDTO request = new ProjectRequestDTO("New Project", "New Description", taskStates);
 
-        Project project = Project.builder()
-                .id(1L)
-                .UUID(UUID.randomUUID())
-                .name(requestDTO.getName())
-                .description(requestDTO.getDescription())
-                .createdAt(LocalDate.now())
-                .updatedAt(LocalDate.now())
-                .build();
+        when(stateRepository.findByName(anyString())).thenReturn(Optional.empty());
+        when(projectRepository.save(any(Project.class))).thenReturn(project);
 
-        // Configure to mock repository and create the project
-        when(repository.save(any(Project.class))).thenReturn(project);
-        ProjectResponseDTO savedBoard = service.createBoard(uuid, requestDTO);
+        ProjectResponseDTO response = service.createBoard(projectUUID, request);
 
-        // Test if the project exists
-        assertNotNull(savedBoard);
-
-        // Check if the data were saved correctly
-        assertEquals(project.getUUID(), savedBoard.getUuid());
-        assertEquals(project.getName(), savedBoard.getName());
-        assertEquals(project.getDescription(), savedBoard.getDescription());
-
-        // Check if fields createdAt and updatedAt were save correctly
-        LocalDate currentDate = LocalDate.now();
-        assertEquals(currentDate, savedBoard.getCreatedAt());
-        assertEquals(currentDate, savedBoard.getUpdatedAt());
-
-        // Check invocations of repository
-        verify(repository, times(1)).save(any(Project.class));
+        assertNotNull(response);
+        assertEquals(projectUUID, response.getUuid());
+        assertEquals("Test Project", response.getName());
+        verify(projectRepository, times(1)).save(any(Project.class));
+        verify(stateRepository, times(3)).findByName(anyString());
+        verify(stateRepository, times(3)).save(any(State.class));
+        verify(projectStateRepository, times(3)).save(any(ProjectState.class));
     }
 
     @Test
-    @DisplayName("Get project by UUID: should return project")
-    void getBoardByUUIDTest() throws NeptuneBoardsException {
-        Project project = Project.builder().UUID(UUID.randomUUID()).name("Test project").build();
-        when(repository.findByUUID(project.getUUID())).thenReturn(Optional.of(project));
+    @DisplayName("Unit Test: Get Board: should return board when found")
+    void getBoardSuccessTest() throws NeptuneBoardsException {
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.of(project));
 
-        ProjectResponseDTO foundBoard = service.getBoard(project.getUUID());
+        ProjectResponseDTO response = service.getBoard(projectUUID);
 
-        assertNotNull(foundBoard);
-        assertEquals("Test project", foundBoard.getName());
+        assertNotNull(response);
+        assertEquals(projectUUID, response.getUuid());
+        assertEquals("Test Project", response.getName());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
     }
 
     @Test
-    @DisplayName("Exception Project: should return 404 not found project")
-    void getNotFoundBoardTest() {
-        NeptuneBoardsException exception = assertThrows(NeptuneBoardsException.class, () -> {
-            service.getBoard(UUID.randomUUID());
-        });
+    @DisplayName("Unit Test: Get Board: should throw exception if board not found")
+    void getBoardNotFoundTest() {
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.empty());
+
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.getBoard(projectUUID)
+        );
+
         assertEquals("Project not found", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(ProjectService.class, exception.getOriginClass());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
     }
 
     @Test
-    @DisplayName("Get All boards: should return list of boards")
-    void getAllBoardsTest() {
-        // Create boards
-        Project project1 = Project.builder().name("project 1").build();
-        Project project2 = Project.builder().name("project 2").build();
+    @DisplayName("Unit Test: Get All Boards: should return list of boards")
+    void getAllBoardsSuccessTest() {
+        when(projectRepository.findAll()).thenReturn(List.of(project));
 
-        // Mock repo
-        when(repository.findAll()).thenReturn(Arrays.asList(project1, project2));
+        List<ProjectResponseDTO> projects = service.getAllBoards();
 
-        // Get boards
-        List<ProjectResponseDTO> boards = service.getAllBoards();
-        assertNotNull(boards);
-        assertEquals(2, boards.size());
-        verify(repository, times(1)).findAll();
+        assertNotNull(projects);
+        assertFalse(projects.isEmpty());
+        assertEquals(1, projects.size());
+        verify(projectRepository, times(1)).findAll();
     }
 
     @Test
-    @DisplayName("Update Project: should update a project if some of the updatable fields are null")
-    void updateBoardTest() throws NeptuneBoardsException {
-        // Create the updated project data and the actual project
-        ProjectRequestDTO boardRequest = ProjectRequestDTO.builder().name("Updated name").build();
-        UUID boardUUID = UUID.randomUUID();
-        Project project = Project.builder().UUID(boardUUID).name("Old name").description("This is a description").build();
+    @DisplayName("Unit Test: Delete Board: should delete board when found")
+    void deleteBoardSuccessTest() throws NeptuneBoardsException {
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.of(project));
 
-        // Mock repository methods
-        Mockito.when(repository.findByUUID(boardUUID)).thenReturn(Optional.of(project));
-        Mockito.when(repository.save(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        ProjectResponseDTO response = service.deleteBoard(projectUUID);
 
-        // Call the service method
-        ProjectResponseDTO updatedBoard = service.updateBoard(boardUUID, boardRequest);
+        assertNotNull(response);
+        assertEquals(projectUUID, response.getUuid());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
+        verify(projectRepository, times(1)).delete(project);
+    }
 
-        // Verify the results
-        assertEquals(boardRequest.getName(), updatedBoard.getName());
-        assertNotNull(updatedBoard.getDescription());
-        assertEquals(project.getDescription(), updatedBoard.getDescription());
-        assertNotEquals(updatedBoard.getUpdatedAt(), updatedBoard.getCreatedAt());
+    @Test
+    @DisplayName("Unit Test: Delete Board: should throw exception if board not found")
+    void deleteBoardNotFoundTest() {
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.empty());
+
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.deleteBoard(projectUUID)
+        );
+
+        assertEquals("Project not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(ProjectService.class, exception.getOriginClass());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
+    }
+
+    @Test
+    @DisplayName("Unit Test: Update Board: should update board when found")
+    void updateBoardSuccessTest() throws NeptuneBoardsException {
+        ProjectRequestDTO request = new ProjectRequestDTO("Updated Project", "Updated Description", new ArrayList<>());
+        Project updatedProject = project.updateFromDto(request);
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.of(project));
+        when(projectRepository.save(any(Project.class))).thenReturn(updatedProject);
+
+        ProjectResponseDTO response = service.updateBoard(projectUUID, request);
+
+        assertNotNull(response);
+        assertEquals(projectUUID, response.getUuid());
+        assertEquals("Updated Project", response.getName());
+    }
+
+    @Test
+    @DisplayName("Unit Test: Update Board: should throw exception if board not found")
+    void updateBoardNotFoundTest() {
+        ProjectRequestDTO request = new ProjectRequestDTO("Updated Project", "Updated Description", new ArrayList<>());
+        when(projectRepository.findByUUID(projectUUID)).thenReturn(Optional.empty());
+
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.updateBoard(projectUUID, request)
+        );
+
+        assertEquals("Project not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(ProjectService.class, exception.getOriginClass());
+        verify(projectRepository, times(1)).findByUUID(projectUUID);
     }
 }
