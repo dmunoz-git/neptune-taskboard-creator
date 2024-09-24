@@ -1,136 +1,157 @@
 package com.neptune.boards.tests.unit.controller;
 
 import com.neptune.boards.controller.StateController;
-import com.neptune.boards.entity.State;
+import com.neptune.boards.dto.state.StateRequestDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.service.StateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.ResponseEntity;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.List;
+import java.util.UUID;
 
-@WebMvcTest(StateController.class)
-class StateControllerTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-    @Autowired
-    private MockMvc mockMvc;
+public class StateControllerTest {
 
-    @MockBean
+    @Mock
     private StateService service;
 
-    private State state;
+    @InjectMocks
+    private StateController controller;
+
+    private StateRequestDTO stateRequest;
+    private StateResponseDTO stateResponse;
+    private UUID stateUUID;
 
     @BeforeEach
     void setUp() {
-        this.state = State.builder().name("Test State").build();
+        MockitoAnnotations.openMocks(this);
+        stateUUID = UUID.randomUUID();
+        stateRequest = new StateRequestDTO("Test State", "Test Description");
+        stateResponse = new StateResponseDTO(stateUUID, "Test State", "Test Description");
     }
 
     @Test
-    @DisplayName("Get State by ID: should return state if found")
-    public void testGetStateById() throws Exception {
-        Mockito.when(service.getState(1L)).thenReturn(this.state);
+    @DisplayName("Unit Test: Get State by UUID: should return state when found")
+    void getStateByUUIDSuccessTest() throws NeptuneBoardsException {
+        when(service.getState(any(UUID.class))).thenReturn(stateResponse);
 
-        mockMvc.perform(get("/state/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test State"));
+        ResponseEntity<StateResponseDTO> response = controller.getStateByUUID(stateUUID);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(stateResponse, response.getBody());
+        verify(service, times(1)).getState(stateUUID);
     }
 
     @Test
-    @DisplayName("Get State by ID: should return not found if state does not exist")
-    public void testGetStateByIdNotFound() throws Exception {
-        Mockito.when(service.getState(1L)).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass()));
+    @DisplayName("Unit Test: Get State by UUID: should throw exception if state not found")
+    void getStateByUUIDNotFoundTest() throws NeptuneBoardsException {
+        when(service.getState(any(UUID.class))).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, StateController.class));
 
-        mockMvc.perform(get("/state/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> controller.getStateByUUID(stateUUID)
+        );
+
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(StateController.class, exception.getOriginClass());
+        verify(service, times(1)).getState(stateUUID);
     }
 
     @Test
-    @DisplayName("Get State by Name: should return state if found")
-    public void testGetStateByName() throws Exception {
-        Mockito.when(service.getState("Test State")).thenReturn(this.state);
+    @DisplayName("Unit Test: Create State: should create state successfully")
+    void createStateSuccessTest() {
+        when(service.createState(any(UUID.class), any(StateRequestDTO.class))).thenReturn(stateResponse);
 
-        mockMvc.perform(get("/state")
-                        .param("name", "Test State")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test State"));
+        ResponseEntity<StateResponseDTO> response = controller.createState(stateUUID, stateRequest);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(stateResponse, response.getBody());
+        verify(service, times(1)).createState(stateUUID, stateRequest);
     }
 
     @Test
-    @DisplayName("Get State by Name: should return not found if state does not exist")
-    public void testGetStateByNameNotFound() throws Exception {
-        Mockito.when(service.getState("Test State")).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass()));
+    @DisplayName("Unit Test: Delete State: should delete state successfully")
+    void deleteStateSuccessTest() throws NeptuneBoardsException {
+        when(service.deleteState(any(UUID.class))).thenReturn(stateResponse);
 
-        mockMvc.perform(get("/state")
-                        .param("name", "Test State")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        ResponseEntity<StateResponseDTO> response = controller.deleteState(stateUUID);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(stateResponse, response.getBody());
+        verify(service, times(1)).deleteState(stateUUID);
     }
 
     @Test
-    @DisplayName("Create State: should create and return a new state")
-    public void testCreateState() throws Exception {
-        Mockito.when(service.create(Mockito.any(State.class))).thenReturn(this.state);
+    @DisplayName("Unit Test: Delete State: should throw exception if state not found")
+    void deleteStateNotFoundTest() throws NeptuneBoardsException {
+        when(service.deleteState(any(UUID.class))).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, StateController.class));
 
-        mockMvc.perform(post("/state")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\": \"Test State\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Test State"));
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> controller.deleteState(stateUUID)
+        );
+
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(StateController.class, exception.getOriginClass());
+        verify(service, times(1)).deleteState(stateUUID);
     }
 
     @Test
-    @DisplayName("Delete State by ID: should delete state if found")
-    public void testDeleteStateById() throws Exception {
-        Mockito.when(service.delete(1L)).thenReturn(this.state);
+    @DisplayName("Unit Test: Update State: should update state successfully")
+    void updateStateSuccessTest() throws NeptuneBoardsException {
+        when(service.updateState(any(UUID.class), any(StateRequestDTO.class))).thenReturn(stateResponse);
 
-        mockMvc.perform(delete("/state/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Test State"));
+        ResponseEntity<StateResponseDTO> response = controller.updateState(stateUUID, stateRequest);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(stateResponse, response.getBody());
+        verify(service, times(1)).updateState(stateUUID, stateRequest);
     }
 
     @Test
-    @DisplayName("Delete State by ID: should return not found if state does not exist")
-    public void testDeleteStateByIdNotFound() throws Exception {
-        Mockito.when(service.delete(1L)).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, this.getClass()));
+    @DisplayName("Unit Test: Update State: should throw exception if state not found")
+    void updateStateNotFoundTest() throws NeptuneBoardsException {
+        when(service.updateState(any(UUID.class), any(StateRequestDTO.class))).thenThrow(new NeptuneBoardsException("State not found", HttpStatus.NOT_FOUND, StateController.class));
 
-        mockMvc.perform(delete("/state/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> controller.updateState(stateUUID, stateRequest)
+        );
+
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(StateController.class, exception.getOriginClass());
+        verify(service, times(1)).updateState(stateUUID, stateRequest);
     }
 
     @Test
-    @DisplayName("Change State Name: should update the state name")
-    public void testChangeStateName() throws Exception {
-        Mockito.doNothing().when(service).changeName("New State");
+    @DisplayName("Unit Test: List States: should return list of states")
+    void listStatesSuccessTest() {
+        when(service.listStates()).thenReturn(List.of(stateResponse));
 
-        mockMvc.perform(put("/state")
-                        .param("currentName", "Test State")
-                        .param("newName", "New State")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
+        ResponseEntity<List<StateResponseDTO>> response = controller.listStates();
 
-    @Test
-    @DisplayName("Update State Name by ID: should update the state name")
-    public void testUpdateStateNameById() throws Exception {
-        Mockito.doNothing().when(service).updateName(1L, "New State");
-
-        mockMvc.perform(put("/state/1")
-                        .param("name", "New State")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().isEmpty());
+        assertEquals(1, response.getBody().size());
+        verify(service, times(1)).listStates();
     }
 }

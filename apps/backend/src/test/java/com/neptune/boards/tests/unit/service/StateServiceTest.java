@@ -1,141 +1,169 @@
 package com.neptune.boards.tests.unit.service;
 
+import com.neptune.boards.dto.state.StateRequestDTO;
+import com.neptune.boards.dto.state.StateResponseDTO;
+import com.neptune.boards.entity.State;
 import com.neptune.boards.exception.NeptuneBoardsException;
 import com.neptune.boards.repository.StateRepository;
 import com.neptune.boards.service.StateService;
-import com.neptune.boards.entity.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class StateServiceTest {
 
     @Mock
-    StateRepository repository;
+    private StateRepository repository;
 
     @InjectMocks
     private StateService service;
 
+    private State state;
+    private UUID stateUUID;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        stateUUID = UUID.randomUUID();
+        state = State.builder()
+                .UUID(stateUUID)
+                .name("To Do")
+                .definitionOfDone("Tasks that need to be started")
+                .build();
     }
 
     @Test
-    @DisplayName("Get State by ID: should return state if found")
-    void getStateByIdTest() throws NeptuneBoardsException {
-        State state = State.builder().name("Test State").build();
-        when(repository.findById(1L)).thenReturn(Optional.of(state));
+    @DisplayName("Unit Test: Get State: should return state when found")
+    void getStateSuccessTest() throws NeptuneBoardsException {
+        when(repository.findByUUID(stateUUID)).thenReturn(Optional.of(state));
 
-        State foundState = service.getState(1L);
+        StateResponseDTO response = service.getState(stateUUID);
 
-        assertNotNull(foundState);
-        assertEquals("Test State", foundState.getName());
-        verify(repository, times(1)).findById(1L);
+        assertNotNull(response);
+        assertEquals(stateUUID, response.getUuid());
+        assertEquals("To Do", response.getName());
+        verify(repository, times(1)).findByUUID(stateUUID);
     }
 
     @Test
-    @DisplayName("Get State by ID: should throw exception if not found")
-    void getStateByIdNotFoundTest() {
-        when(repository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("Unit Test: Get State: should throw exception if state not found")
+    void getStateNotFoundTest() {
+        when(repository.findByUUID(stateUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.getState(1L));
-        verify(repository, times(1)).findById(1L);
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.getState(stateUUID)
+        );
+
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(StateService.class, exception.getOriginClass());
+        verify(repository, times(1)).findByUUID(stateUUID);
     }
 
     @Test
-    @DisplayName("Get State by Name: should return state if found")
-    void getStateByNameTest() throws NeptuneBoardsException {
-        State state = State.builder().name("Test State").build();
-        when(repository.findByName("Test State")).thenReturn(Optional.of(state));
-
-        State foundState = service.getState("Test State");
-
-        assertNotNull(foundState);
-        assertEquals("Test State", foundState.getName());
-        verify(repository, times(1)).findByName("Test State");
-    }
-
-    @Test
-    @DisplayName("Get State by Name: should throw exception if not found")
-    void getStateByNameNotFoundTest() {
-        when(repository.findByName("Test State")).thenReturn(Optional.empty());
-
-        assertThrows(NeptuneBoardsException.class, () -> service.getState("Test State"));
-        verify(repository, times(1)).findByName("Test State");
-    }
-
-    @Test
-    @DisplayName("Create State: should create and return a new state")
-    void createStateTest() {
-        State state = State.builder().name("New State").build();
+    @DisplayName("Unit Test: Create State: should create state successfully")
+    void createStateSuccessTest() {
+        StateRequestDTO request = new StateRequestDTO("In Progress", "Tasks in progress");
         when(repository.save(any(State.class))).thenReturn(state);
 
-        State createdState = service.create(state);
+        StateResponseDTO response = service.createState(stateUUID, request);
 
-        assertNotNull(createdState);
-        assertEquals("New State", createdState.getName());
+        assertNotNull(response);
+        assertEquals(stateUUID, response.getUuid());
+        assertEquals("To Do", response.getName());
         verify(repository, times(1)).save(any(State.class));
     }
 
     @Test
-    @DisplayName("Delete State by ID: should delete state if found")
-    void deleteStateByIdTest() throws NeptuneBoardsException {
-        State state = State.builder().name("Test State").build();
-        when(repository.findById(1L)).thenReturn(Optional.of(state));
+    @DisplayName("Unit Test: Delete State: should delete state when found")
+    void deleteStateSuccessTest() throws NeptuneBoardsException {
+        // Mock data
+        UUID stateUUID = UUID.randomUUID();
+        State state = new State(null, stateUUID, "To Do", "Tasks that need to be started");
 
-        State deletedState = service.delete(1L);
+        // Mock the repository behavior
+        when(repository.findByUUID(stateUUID)).thenReturn(Optional.of(state));
 
-        assertNotNull(deletedState);
-        assertEquals("Test State", deletedState.getName());
-        verify(repository, times(1)).findById(1L);
-        verify(repository, times(1)).delete(state);
+        // Call the service method
+        StateResponseDTO response = service.deleteState(stateUUID);
+
+        // Verify the response and interactions
+        assertNotNull(response);
+        assertEquals(stateUUID, response.getUuid());
     }
 
     @Test
-    @DisplayName("Delete State by ID: should throw exception if not found")
-    void deleteStateByIdNotFoundTest() {
-        when(repository.findById(1L)).thenReturn(Optional.empty());
+    @DisplayName("Unit Test: Delete State: should throw exception if state not found")
+    void deleteStateNotFoundTest() {
+        when(repository.findByUUID(stateUUID)).thenReturn(Optional.empty());
 
-        assertThrows(NeptuneBoardsException.class, () -> service.delete(1L));
-        verify(repository, times(1)).findById(1L);
-        verify(repository, times(0)).delete(any(State.class));
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.deleteState(stateUUID)
+        );
+
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(StateService.class, exception.getOriginClass());
+        verify(repository, times(1)).findByUUID(stateUUID);
     }
 
     @Test
-    @DisplayName("Change State Name: should update the state name")
-    void changeStateNameTest() throws NeptuneBoardsException {
-        State state = State.builder().name("Test State").build();
-        when(repository.findByName("Old Name")).thenReturn(Optional.of(state));
-        when(repository.save(any(State.class))).thenReturn(state);
+    @DisplayName("Unit Test: Update State: should update state when found")
+    void updateStateSuccessTest() throws NeptuneBoardsException {
+        StateRequestDTO request = new StateRequestDTO("Done", "Tasks completed");
+        State updatedState = state.updateFromDto(request);
+        when(repository.findByUUID(stateUUID)).thenReturn(Optional.of(state));
+        when(repository.save(any(State.class))).thenReturn(updatedState);
 
-        service.changeName("Old Name");
+        StateResponseDTO response = service.updateState(stateUUID, request);
 
-        assertEquals("Old Name", state.getName());
-        verify(repository, times(1)).findByName("Old Name");
-        verify(repository, times(1)).save(any(State.class));
+        assertNotNull(response);
+        assertEquals(stateUUID, response.getUuid());
+        assertEquals("Done", response.getName());
+        verify(repository, times(1)).findByUUID(stateUUID);
+        verify(repository, times(1)).save(updatedState);
     }
 
     @Test
-    @DisplayName("Update State Name by ID: should update the state name")
-    void updateStateNameByIdTest() throws NeptuneBoardsException {
-        State state = State.builder().name("Test State").build();
-        when(repository.findById(1L)).thenReturn(Optional.of(state));
-        when(repository.save(any(State.class))).thenReturn(state);
+    @DisplayName("Unit Test: Update State: should throw exception if state not found")
+    void updateStateNotFoundTest() {
+        StateRequestDTO request = new StateRequestDTO("Done", "Tasks completed");
+        when(repository.findByUUID(stateUUID)).thenReturn(Optional.empty());
 
-        service.updateName(1L, "New Name");
+        NeptuneBoardsException exception = assertThrows(
+                NeptuneBoardsException.class,
+                () -> service.updateState(stateUUID, request)
+        );
 
-        assertEquals("New Name", state.getName());
-        verify(repository, times(1)).findById(1L);
-        verify(repository, times(1)).save(any(State.class));
+        assertEquals("State not found", exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        assertEquals(StateService.class, exception.getOriginClass());
+        verify(repository, times(1)).findByUUID(stateUUID);
+    }
+
+    @Test
+    @DisplayName("Unit Test: List States: should return list of states")
+    void listStatesSuccessTest() {
+        when(repository.findAll()).thenReturn(List.of(state));
+
+        List<StateResponseDTO> states = service.listStates();
+
+        assertNotNull(states);
+        assertFalse(states.isEmpty());
+        assertEquals(1, states.size());
+        verify(repository, times(1)).findAll();
     }
 }

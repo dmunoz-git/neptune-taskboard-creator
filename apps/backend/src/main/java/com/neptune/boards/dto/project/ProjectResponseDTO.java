@@ -1,6 +1,7 @@
 package com.neptune.boards.dto.project;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Builder;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class ProjectResponseDTO {
 
     @JsonView(ProjectResponseViews.Summary.class)
@@ -27,6 +29,7 @@ public class ProjectResponseDTO {
     @JsonView(ProjectResponseViews.Detail.class)
     private LocalDate updatedAt;
 
+    // TODO: Change by list with the states and tasks
     @JsonView(ProjectResponseViews.Detail.class)
     private List<UUID> tasks;
 }
