@@ -29,6 +29,7 @@ public class ProjectResponseDTO {
     @JsonView(ProjectResponseViews.Detail.class)
     private LocalDate updatedAt;
 
+    // TODO: Change by list with the states and tasks
     @JsonView(ProjectResponseViews.Detail.class)
     private List<UUID> tasks;
 }
