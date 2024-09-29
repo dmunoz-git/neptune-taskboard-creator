@@ -1,0 +1,66 @@
+{
+  "uuid": "a99268bf-aa99-4af8-a8a6-1b1ed37d05c7",
+  "name": "Design the project logo",
+  "description": "Create a logo that reflects the project's values and mission.",
+  "state": {
+    "uuid": "7f73bf92-647c-4d3a-9a4e-9071d6d50a78",
+    "name": "In Progress"
+  },
+  "createdAt": "2024-09-22T09:30:00Z",
+  "updatedAt": "2024-09-24T10:15:00Z",
+  "todoList": [
+    {
+      "uuid": "f4567890-12de-4f23-c456-6789abcdef12",
+      "task": "Draft initial logo concepts",
+      "completed": true
+    },
+    {
+      "uuid": "e5678901-23ef-4g34-d567-789abcdef123",
+      "task": "Present logo concepts to team",
+      "completed": false
+    },
+    {
+      "uuid": "g6789012-34fg-4h45-e678-89abcdef1234",
+      "task": "Incorporate feedback and finalize logo",
+      "completed": false
+    }
+  ],
+  "comments": [
+    {
+      "uuid": "c1d23456-78ab-4cde-9012-3456789abcdef",
+      "author": "John Doe",
+      "message": "I like the second logo draft, but I think the colors could be adjusted.",
+      "createdAt": "2024-09-23T14:30:00Z"
+    },
+    {
+      "uuid": "d2e34567-89bc-4def-0123-456789abcdef",
+      "author": "Jane Smith",
+      "message": "Agreed with John. Let's try using a different color palette.",
+      "createdAt": "2024-09-23T15:45:00Z"
+    },
+    {
+      "uuid": "e3f45678-90cd-4ef0-1234-56789abcdef0",
+      "author": "John Doe",
+      "message": "New color palette looks great! Ready for final review.",
+      "createdAt": "2024-09-24T09:00:00Z"
+    }
+  ],
+  "history": [
+    {
+      "uuid": "h1234567-89ab-4cde-f012-3456789abcde",
+      "action": "Task created",
+      "timestamp": "2024-09-22T09:30:00Z"
+    },
+    {
+      "uuid": "i2345678-90bc-4def-a123-456789abcdef",
+      "action": "Moved to 'In Progress'",
+      "timestamp": "2024-09-23T10:00:00Z"
+    },
+    {
+      "uuid": "j3456789-01cd-4f01-b234-56789abcdef0",
+      "action": "Logo draft submitted",
+      "timestamp": "2024-09-23T14:00:00Z"
+    }
+  ]
+}
+

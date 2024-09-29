@@ -1,0 +1,29 @@
+{
+  "uuid": "803765bb-18a3-4f9b-852c-7c92eaf1fdc7",
+  "name": "Set up project repository",
+  "description": "Create the initial repository and set up the project structure.",
+  "state": {
+    "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "To Do"
+  },
+  "createdAt": "2024-09-23T00:00:00Z",
+  "updatedAt": "2024-09-23T00:00:00Z",
+  "todoList": [
+    {
+      "uuid": "b1234567-89ab-4cde-f012-3456789abcde",
+      "task": "Create Git repository",
+      "completed": false
+    },
+    {
+      "uuid": "c2345678-90bc-4def-a123-456789abcdef",
+      "task": "Initialize README file",
+      "completed": true
+    },
+    {
+      "uuid": "d3456789-01cd-4f01-b234-56789abcdef0",
+      "task": "Set up CI/CD pipeline",
+      "completed": false
+    }
+  ]
+}
+

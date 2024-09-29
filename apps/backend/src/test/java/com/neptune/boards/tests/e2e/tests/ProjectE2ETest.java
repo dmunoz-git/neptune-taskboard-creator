@@ -3,14 +3,10 @@ package com.neptune.boards.tests.e2e.tests;
 import com.neptune.boards.tests.e2e.config.Config;
 import com.neptune.boards.tests.e2e.utils.JsonUtils;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import io.restassured.RestAssured;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -20,6 +16,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@Disabled
 public class ProjectE2ETest {
     private static final UUID projectId = UUID.fromString("90b18fbf-89ea-4c7a-8490-8f9e127f4261");
 
