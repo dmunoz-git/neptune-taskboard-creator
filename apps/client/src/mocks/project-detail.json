@@ -1,0 +1,59 @@
+{
+  "uuid": "90b18fbf-89ea-4c7a-8490-8f9e127f4261",
+  "name": "Test Project",
+  "description": "A project created for E2E testing purposes",
+  "createdAt": "2024-09-23T00:00:00Z",
+  "updatedAt": "2024-09-23T00:00:00Z",
+  "states": [
+    {
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name": "To Do",
+      "definitionOfDone": "Tasks that need to be started",
+      "defaultState": true,
+      "tasks": [
+        {
+          "uuid": "803765bb-18a3-4f9b-852c-7c92eaf1fdc7",
+          "name": "Set up project repository",
+          "description": "Create the initial repository and set up the project structure."
+        }
+      ]
+    },
+    {
+      "uuid": "7f73bf92-647c-4d3a-9a4e-9071d6d50a78",
+      "name": "In Progress",
+      "definitionOfDone": "Tasks that are currently being worked on",
+      "defaultState": false,
+      "tasks": [
+        {
+          "uuid": "a99268bf-aa99-4af8-a8a6-1b1ed37d05c7",
+          "name": "Design homepage",
+          "description": "Design the homepage layout with the new brand guidelines."
+        },
+        {
+          "uuid": "326ec95e-56cd-4616-b0f0-448fae74a4f2",
+          "name": "Develop homepage",
+          "description": "Develop the homepage based on the design specifications."
+        }
+      ]
+    },
+    {
+      "uuid": "d1234567-89ab-4cde-f012-3456789abcde",
+      "name": "Done",
+      "definitionOfDone": "Tasks that have been completed",
+      "defaultState": false,
+      "tasks": [
+        {
+          "uuid": "4f60acb1-dee1-4344-858d-09fa4c984392",
+          "name": "Deploy homepage",
+          "description": "Deploy the homepage to the staging environment for review."
+        },
+        {
+          "uuid": "80a79983-e059-479b-a3ce-3f99ef288ff0",
+          "name": "Review homepage",
+          "description": "Review the homepage with the team and make final adjustments."
+        }
+      ]
+    }
+  ]
+}
+

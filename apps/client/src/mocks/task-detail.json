@@ -1,0 +1,12 @@
+{
+  "uuid": "803765bb-18a3-4f9b-852c-7c92eaf1fdc7",
+  "name": "Set up project repository",
+  "description": "Create the initial repository and set up the project structure.",
+  "state": {
+    "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "To Do"
+  },
+  "createdAt": "2024-09-23T00:00:00Z",
+  "updatedAt": "2024-09-23T00:00:00Z"
+}
+

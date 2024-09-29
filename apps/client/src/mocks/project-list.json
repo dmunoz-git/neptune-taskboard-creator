@@ -1,0 +1,24 @@
+[
+  {
+    "uuid": "90b18fbf-89ea-4c7a-8490-8f9e127f4261",
+    "name": "Test Project",
+    "description": "A project created for E2E testing purposes",
+    "createdAt": "2024-09-23T00:00:00Z",
+    "updatedAt": "2024-09-23T00:00:00Z"
+  },
+  {
+    "uuid": "a18f98bc-2e7f-4b93-b8f2-df19fcb2e813",
+    "name": "Website Redesign",
+    "description": "Redesign the company website for a new brand identity.",
+    "createdAt": "2024-07-15T00:00:00Z",
+    "updatedAt": "2024-09-21T00:00:00Z"
+  },
+  {
+    "uuid": "b23fba12-312d-4e45-9ff3-4dc9f563eadd",
+    "name": "Mobile App Development",
+    "description": "Develop a new mobile application for our e-commerce platform.",
+    "createdAt": "2023-12-01T00:00:00Z",
+    "updatedAt": "2024-08-30T00:00:00Z"
+  }
+]
+
